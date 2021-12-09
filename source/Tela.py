@@ -1,17 +1,23 @@
 import pygame as pg
 
 
-def criar_tela(largura: int, altura: int, cor: tuple) -> pg.Surface:
-    """Cria uma janela"""
+class Tela:
+    def __init__(self, largura: int, altura: int, cor_fundo: tuple):
+        self.largura = largura
+        self.altura = altura
+        self.cor_fundo = cor_fundo
 
-    # cria a tela
-    tela = pg.display.set_mode((largura, altura))
+    def criar_tela(self) -> pg.Surface:
+        """Cria uma janela"""
 
-    # define a cor de fundo
-    tela.fill(cor)
+        # cria a tela
+        tela = pg.display.set_mode((self.largura, self.altura))
 
-    # define o título
-    titulo = f"tela x={largura}  y={altura}"
-    pg.display.set_caption(titulo)
+        # define a cor de fundo
+        tela.fill(self.cor_fundo)
 
-    return tela
+        # define o título
+        titulo = f"tela x={self.largura}  y={self.altura}"
+        pg.display.set_caption(titulo)
+
+        return tela

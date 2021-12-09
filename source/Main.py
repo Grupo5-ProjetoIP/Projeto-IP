@@ -1,4 +1,4 @@
-from source.Tela import *
+from source.Tela import Tela
 from assets.Personagem.Personagem import *
 from source.Cores import coresRGB
 
@@ -6,14 +6,13 @@ from source.Cores import coresRGB
 def main():
     """função principal do programa"""
     # cria a tela
-    largura = 800
-    altura = 600
-    tela = criar_tela(largura, altura, coresRGB["branco"])
+    tela = Tela(800, 600, coresRGB["branco"])
+    superficie = tela.criar_tela()
 
     clock = pg.time.Clock()
 
     # cria o personagem
-    personagem = Personagem(tela, 400, 300, 20, 20, 10, coresRGB["azul"])
+    personagem = Personagem(superficie, 400, 300, 20, 20, 10, coresRGB["azul"])
 
     rodando = True
     while rodando:
@@ -25,7 +24,7 @@ def main():
         # move o personagem
         personagem.mover()
 
-        tela.fill(coresRGB["branco"])
+        superficie.fill(coresRGB["branco"])
         personagem.desenhar()
 
         pg.display.flip()
