@@ -1,27 +1,35 @@
 import pygame as pg
+from source.Cores import coresRGB
 
 
-class Personagem:
+class Personagem(pg.sprite.Sprite):
     """Um personagem simples que anda pela tela"""
 
     # inicializa os atributos
     def __init__(self, janela: pg.Surface,
-                 x: float, y: float, largura: float, altura: float, velocidade: float, cor: tuple):
+                 x: float, y: float, largura: float, altura: float, velocidade: float, cor: tuple, imagem: pg.Surface):
+
+        super().__init__()
 
         self.janela = janela
-        self.x = x
-        self.y = y
 
         self.largura = largura
         self.altura = altura
-        self.velocidade = velocidade
+
         self.cor = cor
+
+        self.imagem = pg.transform.scale(imagem, (self.largura, self.altura))
+
+        self.retangulo = self.imagem.get_rect()
+        self.retangulo.x = x
+        self.retangulo.y = y
+
+        self.velocidade = velocidade
 
     def desenhar(self):
         """desenha o personagem na tela"""
 
-        retangulo = pg.Rect(self.x, self.y, self.largura, self.altura)
-        pg.draw.rect(self.janela, self.cor, retangulo)
+        self.janela.blit(self.imagem, self.retangulo)
 
     def mover(self):
         """move o personagem de acordo com a tecla pressionada"""
@@ -30,17 +38,24 @@ class Personagem:
         keys = pg.key.get_pressed()
 
         # move para a esquerda
-        if keys[pg.K_a] and self.x - self.velocidade >= 0:
-            self.x -= self.velocidade
+        if keys[pg.K_a] and self.retangulo.x - self.velocidade >= 0:
+            self.retangulo.x -= self.velocidade
 
         # move para a direita
-        if keys[pg.K_d] and self.x + self.largura + self.velocidade <= self.janela.get_width():
-            self.x += self.velocidade
+        if keys[pg.K_d] and self.retangulo.x + self.largura + self.velocidade <= self.janela.get_width():
+            self.retangulo.x += self.velocidade
 
         # move para cima
-        if keys[pg.K_w] and self.y - self.velocidade >= 0:
-            self.y -= self.velocidade
+        if keys[pg.K_w] and self.retangulo.y - self.velocidade >= 0:
+            self.retangulo.y -= self.velocidade
 
         # move para baixo
-        if keys[pg.K_s] and self.y + self.altura + self.velocidade <= self.janela.get_height():
-            self.y += self.velocidade
+        if keys[pg.K_s] and self.retangulo.y + self.altura + self.velocidade <= self.janela.get_height():
+            self.retangulo.y += self.velocidade
+
+    def update(self):
+        """função executada a cada ciclo"""
+
+        self.mover()
+        self.janela.fill(coresRGB["branco"])
+        self.desenhar()
