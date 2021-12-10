@@ -1,6 +1,6 @@
-from source.Tela import Tela
-from assets.Personagem.Personagem import *
-from source.Cores import coresRGB
+from Tela import Tela
+from Personagem import *
+from Cores import coresRGB
 
 
 def main():
@@ -13,7 +13,8 @@ def main():
 
     # cria o personagem
     imagem_personagem = pg.image.load("assets/Personagem/imagens/teste.png")
-    personagem = Personagem(superficie, 400, 300, 40, 40, 10, coresRGB["azul"], imagem_personagem)
+    personagem = Personagem(superficie, 400, 300, 40,
+                            40, 10, coresRGB["azul"], imagem_personagem)
 
     rodando = True
     while rodando:

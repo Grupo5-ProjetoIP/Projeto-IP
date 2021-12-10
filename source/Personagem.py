@@ -1,5 +1,5 @@
 import pygame as pg
-from source.Cores import coresRGB
+from Cores import coresRGB
 
 
 class Personagem(pg.sprite.Sprite):
