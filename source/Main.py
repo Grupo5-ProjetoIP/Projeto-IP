@@ -1,6 +1,6 @@
-from source.Tela import Tela
-from assets.Personagem.Personagem import *
-from source.Cores import coresRGB
+from Tela import Tela
+from Personagem import *
+from Cores import coresRGB
 
 
 def main():
@@ -12,7 +12,9 @@ def main():
     clock = pg.time.Clock()
 
     # cria o personagem
-    personagem = Personagem(superficie, 400, 300, 20, 20, 10, coresRGB["azul"])
+    imagem_personagem = pg.image.load("assets/Personagem/imagens/teste.png")
+    personagem = Personagem(superficie, 400, 300, 40,
+                            40, 10, coresRGB["azul"], imagem_personagem)
 
     rodando = True
     while rodando:
@@ -21,11 +23,7 @@ def main():
             if event.type == pg.QUIT:
                 rodando = False
 
-        # move o personagem
-        personagem.mover()
-
-        superficie.fill(coresRGB["branco"])
-        personagem.desenhar()
+        personagem.update()
 
         pg.display.flip()
         clock.tick(30)
