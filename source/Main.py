@@ -11,10 +11,15 @@ def main():
 
     clock = pg.time.Clock()
 
+    imagem_labirinto = pg.image.load("assets/imagens/teste_colisao.png")
+    labirinto = pg.sprite.Sprite()
+    labirinto.rect = imagem_labirinto.get_rect()
+    labirinto.image = pg.transform.scale(imagem_labirinto, (800, 600))
+
     # cria o personagem
     imagem_personagem = pg.image.load("assets/Personagem/imagens/teste.png")
-    personagem = Personagem(superficie, 400, 300, 40,
-                            40, 10, coresRGB["azul"], imagem_personagem)
+    personagem = Personagem(superficie, labirinto,
+                            20, 230, 40, 40, 10, coresRGB["azul"], imagem_personagem)
 
     rodando = True
     while rodando:
