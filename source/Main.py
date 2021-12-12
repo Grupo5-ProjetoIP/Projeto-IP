@@ -1,7 +1,7 @@
 from Tela import Tela
 from Personagem import *
 from Cores import coresRGB
-from Coletaveis2 import *
+from Coletaveis import *
 
 
 def main():
