@@ -22,7 +22,7 @@ def main():
     # criando os relogios
     pos_x = 300
     pos_y = 230
-    tempo = Relogio(pos_x, pos_y, superficie )
+    tempo = Relogio(pos_x, pos_y, superficie)
     tempo = Relogio(pos_x+50, pos_y, superficie)
 
     # criando as moedas
@@ -39,15 +39,15 @@ def main():
     labirinto.image = pg.transform.scale(imagem_labirinto, (800, 600))
 
     # cria o personagem
-    imagem_personagem = pg.image.load("assets/Personagem/imagens/teste.png")
+    imagem_personagem = pg.image.load("assets/Personagem/imagens/player.png")
     personagem = Personagem(superficie, labirinto,
-                            20, 230, 40, 40, 10, coresRGB["azul"], imagem_personagem)
+                            20, 230, 40, 40, 5, coresRGB["azul"], imagem_personagem)
 
     rodando = True
     while rodando:
-        for event in pg.event.get():
+        for evento in pg.event.get():
             # sai do jogo
-            if event.type == pg.QUIT:
+            if evento.type == pg.QUIT:
                 rodando = False
 
         personagem.update()

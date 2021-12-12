@@ -1,4 +1,5 @@
 import pygame as pg
+from pygame import sprite
 from Cores import coresRGB
 
 
@@ -17,26 +18,92 @@ class Personagem(pg.sprite.Sprite):
         self.largura = largura
         self.altura = altura
 
+        self.velocidade = velocidade
+        self.andando = False
+
         self.cor = cor
 
-        self.image = pg.transform.scale(imagem, (self.largura, self.altura))
+        # cria uma lista com os sprites da animação
+        self.sprite_sheet = imagem
+        self.sprites = []
+        self.atual = 0
 
-        self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        qtd_sprt = 12
+        altura_sprt = self.sprite_sheet.get_height()
 
-        self.velocidade = velocidade
+        for i in range(qtd_sprt):
+            image = self.sprite_sheet.subsurface(
+                (i*altura_sprt, 0), (altura_sprt, altura_sprt))
+            image = pg.transform.scale(
+                image, (self.largura * 2, self.altura * 2))
+            self.sprites.append(image)
+
+        # define as imagens para cada direção
+        self.sprites_cima = list(self.sprites)
+
+        self.sprites_baixo = []
+        for i in self.sprites:
+            i = pg.transform.flip(i, False, True)
+            self.sprites_baixo.append(i)
+
+        self.sprites_direita = []
+        for i in self.sprites:
+            i = pg.transform.rotate(i, -90)
+            self.sprites_direita.append(i)
+
+        self.sprites_esquerda = []
+        for i in self.sprites_direita:
+            i = pg.transform.flip(i, True, False)
+            self.sprites_esquerda.append(i)
+
+        # define a imagem inicial e o retângulo
+        self.image = self.sprites[0]
+        self.rect = pg.Rect(x, y, self.largura, self.altura)
 
     def desenhar(self):
         """desenha o personagem na tela"""
 
-        self.janela.blit(self.image, self.rect)
+        offset = (self.rect.x - self.image.get_height() * 0.23,
+                  self.rect.y - self.image.get_height() * 0.23)
+
+        if self.andando:
+            self.janela.blit(self.image, offset)
+        else:
+            self.janela.blit(self.sprites[0], offset)
+
+    def andar(self):
+        """animação do personagem"""
+
+        keys = pg.key.get_pressed()
+        self.andando = True
+
+        if keys[pg.K_a]:
+            self.sprites = self.sprites_esquerda
+            if keys[pg.K_d]:
+                self.andando = False
+        elif keys[pg.K_d]:
+            self.sprites = self.sprites_direita
+        elif keys[pg.K_w]:
+            self.sprites = self.sprites_cima
+            if keys[pg.K_s]:
+                self.andando = False
+        elif keys[pg.K_s]:
+            self.sprites = self.sprites_baixo
+        else:
+            self.andando = False
+
+        if self.andando:
+            self.atual += 0.6
+            if self.atual >= len(self.sprites):
+                self.atual = 0
+            self.image = self.sprites[int(self.atual)]
 
     def colisao_com_labirinto(self, direcao: str) -> bool:
         """checa se é possível andar sem colidir com o labirinto"""
 
         sprite_aux = pg.sprite.Sprite()
-        sprite_aux.image = self.image
+        sprite_aux.image = pg.Surface(self.rect.size)
+        sprite_aux.image.fill(coresRGB["preto"])
 
         if direcao == "esquerda":
             sprite_aux.rect = pg.Rect(
@@ -89,6 +156,7 @@ class Personagem(pg.sprite.Sprite):
         """função executada a cada ciclo"""
 
         self.mover()
+        self.andar()
         self.janela.fill(coresRGB["branco"])
         self.janela.blit(self.labirinto.image, self.labirinto.rect)
-        self.janela.blit(self.image, self.rect)
+        self.desenhar()
