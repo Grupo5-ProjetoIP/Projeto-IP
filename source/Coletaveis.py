@@ -23,9 +23,20 @@ class Chave(Coletaveis):
     coletou_chave = False
     chave_ativa = []
 
+    sprite_sheet = pg.image.load("assets/Coletaveis/chave.png")
+
     def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, altura: float = 40, largura: float = 40):
         super().__init__(x, y, janela, image)
         Chave.chave_ativa.append(self)
+
+        self.sprites = []
+        for i in range(4):
+            img = Chave.sprite_sheet.subsurface((i*64,0), (64,64))
+            img = pg.transform.scale(img, (largura, altura))
+            self.sprites.append(img)
+
+        self.atual = 0
+        self.image = self.sprites[self.atual]
 
     def coletar(self):
         Chave.coletou_chave = True
@@ -34,6 +45,10 @@ class Chave(Coletaveis):
 
     def update(self, personagem):
         for chave in Chave.chave_ativa:
+            chave.atual += 0.3
+            if chave.atual >= len(self.sprites):
+                chave.atual = 0
+            chave.image = self.sprites[int(chave.atual)]
             chave.desenhar()
             if personagem.rect.colliderect(self.rect):
                 self.coletar()
@@ -79,9 +94,20 @@ class Moeda(Coletaveis):
     moedas_coletadas = 0
     moedas_ativas = []
 
+    sprite_sheet = pg.image.load("assets/Coletaveis/moeda.png")
+
     def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, altura: float = 40, largura: float = 40):
         super().__init__(x, y, janela, image)
         Moeda.moedas_ativas.append(self)
+
+        self.sprites = []
+        for i in range(4):
+            img = Moeda.sprite_sheet.subsurface((i*64,0), (64,64))
+            img = pg.transform.scale(img, (largura, altura))
+            self.sprites.append(img)
+
+        self.atual = 0
+        self.image = self.sprites[self.atual]
 
     def coletar(self):
         Moeda.moedas_coletadas += 1
@@ -90,6 +116,10 @@ class Moeda(Coletaveis):
     
     def update(self, personagem):
         for moeda in Moeda.moedas_ativas:
+            moeda.atual += 0.3
+            if moeda.atual >= len(self.sprites):
+                moeda.atual = 0
+            moeda.image = self.sprites[int(moeda.atual)]
             moeda.desenhar()
             if personagem.rect.colliderect(moeda.rect):
                 moeda.coletar()
