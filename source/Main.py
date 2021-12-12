@@ -1,6 +1,7 @@
 from Tela import Tela
 from Personagem import *
 from Cores import coresRGB
+from Coletaveis import *
 
 
 def main():
@@ -10,6 +11,27 @@ def main():
     superficie = tela.criar_tela()
 
     clock = pg.time.Clock()
+
+    # Objetos:
+    # criando a chave
+    imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
+    pos_x = 500
+    pos_y = 230
+    chave = Chave(pos_x, pos_y, superficie, imagem_chave)
+
+    # criando os relogios
+    pos_x = 300
+    pos_y = 230
+    tempo = Relogio(pos_x, pos_y, superficie )
+    tempo = Relogio(pos_x+50, pos_y, superficie)
+
+    # criando as moedas
+    imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
+    pos_y = 230
+    pos_x = 500
+    for _ in range(3):
+        pos_x += 70
+        moeda = Moeda(pos_x, pos_y, superficie, imagem_moeda)
 
     imagem_labirinto = pg.image.load("assets/imagens/teste_colisao.png")
     labirinto = pg.sprite.Sprite()
@@ -29,6 +51,10 @@ def main():
                 rodando = False
 
         personagem.update()
+
+        tempo.update(personagem)
+        chave.update(personagem)
+        moeda.update(personagem)
 
         pg.display.flip()
         clock.tick(30)
