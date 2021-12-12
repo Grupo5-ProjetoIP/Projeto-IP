@@ -74,12 +74,6 @@ class Relogio(Coletaveis):
             if personagem.retangulo.colliderect(relogio.rect):
                 relogio.coletar()
         
-        # Mostra o tempo restante a cada segundo
-        Relogio.dt += 1
-        if Relogio.dt%30 == 0:
-            Relogio.tempo_restante -= Relogio.dt//30
-            Relogio.dt = 0
-            print('Tempo restante:', Relogio.tempo_restante)
 
 class Moeda(Coletaveis):
     moedas_coletadas = 0
