@@ -35,7 +35,7 @@ class Chave(Coletaveis):
     def update(self, personagem):
         for chave in Chave.chave_ativa:
             chave.desenhar()
-            if personagem.retangulo.colliderect(self.rect):
+            if personagem.rect.colliderect(self.rect):
                 self.coletar()
         
 class Relogio(Coletaveis):
@@ -71,7 +71,7 @@ class Relogio(Coletaveis):
                 relogio.atual = 0
             relogio.image = self.sprites[int(relogio.atual)]
             relogio.desenhar()
-            if personagem.retangulo.colliderect(relogio.rect):
+            if personagem.rect.colliderect(relogio.rect):
                 relogio.coletar()
         
 
@@ -91,5 +91,5 @@ class Moeda(Coletaveis):
     def update(self, personagem):
         for moeda in Moeda.moedas_ativas:
             moeda.desenhar()
-            if personagem.retangulo.colliderect(moeda.rect):
+            if personagem.rect.colliderect(moeda.rect):
                 moeda.coletar()

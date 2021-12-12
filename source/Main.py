@@ -14,30 +14,34 @@ def main():
 
     # Objetos:
     # criando a chave
-    imagem_chave = pg.image.load("assets/Coletaveis/chaves.png")
+    imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
     pos_x = 500
-    pos_y = 200
+    pos_y = 230
     chave = Chave(pos_x, pos_y, superficie, imagem_chave)
 
     # criando os relogios
-    pos_x = 55
-    pos_y = 70
+    pos_x = 300
+    pos_y = 230
     tempo = Relogio(pos_x, pos_y, superficie )
     tempo = Relogio(pos_x+50, pos_y, superficie)
 
     # criando as moedas
     imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
-    pos_y = 70
-    pos_x = 300
+    pos_y = 230
+    pos_x = 500
     for _ in range(3):
+        pos_x += 70
         moeda = Moeda(pos_x, pos_y, superficie, imagem_moeda)
-        pos_y += 100
 
+    imagem_labirinto = pg.image.load("assets/imagens/teste_colisao.png")
+    labirinto = pg.sprite.Sprite()
+    labirinto.rect = imagem_labirinto.get_rect()
+    labirinto.image = pg.transform.scale(imagem_labirinto, (800, 600))
 
     # cria o personagem
     imagem_personagem = pg.image.load("assets/Personagem/imagens/teste.png")
-    personagem = Personagem(superficie, 400, 300, 40,
-                            40, 10, coresRGB["azul"], imagem_personagem)
+    personagem = Personagem(superficie, labirinto,
+                            20, 230, 40, 40, 10, coresRGB["azul"], imagem_personagem)
 
     rodando = True
     while rodando:
