@@ -4,6 +4,7 @@ from Personagem import *
 from Cores import coresRGB
 from Coletaveis import *
 from Labirinto import Labirinto
+from Contador import Contador
 
 
 class Main:
@@ -94,6 +95,9 @@ class Main:
         """loop do jogo"""
 
         # Objetos:
+        # criando contador de tempo
+        contador_tempo = Contador(self.superficie, 60)
+
         # criando a chave
         efeito_coleta_de_keys = pygame.mixer.Sound(
             'assets/sounds/fesliyan studios_collecting _keys_opção 01.wav')
@@ -136,13 +140,15 @@ class Main:
         personagem = Personagem(self.superficie, labirinto.parede, labirinto.piso,
                                 20, 250, 35, 35, 5, coresRGB["azul"], imagem_personagem)
 
-        while self.jogando:
+        while self.jogando and contador_tempo.tempo > 0:
             for evento in pg.event.get():
                 # sai do jogo
                 if evento.type == pg.QUIT:
                     self.jogando = False
 
+            labirinto.desenhar_labirinto()
             personagem.update()
+            contador_tempo.update()
 
             tempo.update(personagem)
             chave.update(personagem)
