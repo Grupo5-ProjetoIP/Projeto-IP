@@ -5,12 +5,12 @@ from Cores import coresRGB
 class Contador:
     def __init__(self, janela, tempo, tempo_bonus):
 
-        relogio_imagem = pg.image.load("assets/Coletaveis/relogio_spritesheet.png")
+        relogio_imagem = pg.image.load(
+            "assets/Coletaveis/relogio_spritesheet.png")
         relogio_imagem = relogio_imagem.subsurface((160*2, 0), (160, 160))
         self.relogio_imagem = pg.transform.scale(relogio_imagem, (64, 64))
         self.relogiorect = relogio_imagem.get_rect()
         self.relogiorect.topleft = (5, 5)
-
 
         self.cor = coresRGB["branco"]
         self.janela = janela
@@ -46,7 +46,7 @@ class Contador:
 
             if self.bonus:
                 self.texto = self.fonte.render(
-                    f'{minutos}:{segundos}  +5s', True, self.cor)
+                    f'{minutos}:{segundos}  +{self.tempo_bonus}s', True, self.cor)
                 self.bonus = False
             else:
                 self.texto = self.fonte.render(
