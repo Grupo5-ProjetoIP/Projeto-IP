@@ -1,4 +1,11 @@
+import pygame
 import pygame as pg
+
+pygame.init()
+
+efeito_coleta_de_moedas = pygame.mixer.Sound('assets/sounds/freesound_collecting_coins_opção 01.wav')
+efeito_coleta_de_keys = pygame.mixer.Sound('assets/sounds/fesliyan studios_collecting _keys_opção 01.wav')
+efeito_coleta_de_relógios = pygame.mixer.Sound('assets/sounds/orange free sounds_collecting_items_opção 04.wav')
 
 class Coletaveis(pg.sprite.Sprite):
     def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, altura: float = 40, largura: float = 40):
@@ -52,6 +59,7 @@ class Chave(Coletaveis):
             chave.desenhar()
             if personagem.rect.colliderect(self.rect):
                 self.coletar()
+                efeito_coleta_de_keys.play()
         
 class Relogio(Coletaveis):
     tempo_restante = 50
@@ -88,6 +96,7 @@ class Relogio(Coletaveis):
             relogio.desenhar()
             if personagem.rect.colliderect(relogio.rect):
                 relogio.coletar()
+                efeito_coleta_de_relógios.play()
         
 
 class Moeda(Coletaveis):
@@ -123,3 +132,4 @@ class Moeda(Coletaveis):
             moeda.desenhar()
             if personagem.rect.colliderect(moeda.rect):
                 moeda.coletar()
+                efeito_coleta_de_moedas.play()
