@@ -144,7 +144,7 @@ class Moeda(Coletaveis):
                 moeda.coletar()
                 self.som.play()
 
-class contadorColetaveis():
+class ContadorColetaveis():
     def __init__(self, janela):
         self.janela = janela
         self.fonte = pg.font.Font(None, 45)

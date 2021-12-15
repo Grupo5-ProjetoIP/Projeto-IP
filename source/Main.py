@@ -128,7 +128,7 @@ class Main:
             moeda = Moeda(pos_x, pos_y, self.superficie,
                           efeito_coleta_de_moedas)
         
-        contador_coletaveis = contadorColetaveis(self.superficie)
+        contador_coletaveis = ContadorColetaveis(self.superficie)
         
         
 
