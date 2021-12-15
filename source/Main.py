@@ -102,8 +102,8 @@ class Main:
         efeito_coleta_de_keys = pygame.mixer.Sound(
             'assets/sounds/key_sound.wav')
         #imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
-        pos_x = 500
-        pos_y = 230
+        pos_x = 450 
+        pos_y = 550
         chave = Chave(pos_x, pos_y, self.superficie,
                       efeito_coleta_de_keys)
 
