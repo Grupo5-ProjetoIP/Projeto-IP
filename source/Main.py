@@ -14,24 +14,27 @@ def main():
 
     # Objetos:
     # criando a chave
+    efeito_coleta_de_keys = pygame.mixer.Sound('assets/sounds/fesliyan studios_collecting _keys_opção 01.wav')
     imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
     pos_x = 500
     pos_y = 230
-    chave = Chave(pos_x, pos_y, superficie, imagem_chave)
+    chave = Chave(pos_x, pos_y, superficie, imagem_chave, efeito_coleta_de_keys)
 
     # criando os relogios
+    efeito_coleta_de_relógios = pygame.mixer.Sound('assets/sounds/orange free sounds_collecting_items_opção 04.wav')
     pos_x = 300
     pos_y = 230
-    tempo = Relogio(pos_x, pos_y, superficie)
-    tempo = Relogio(pos_x+50, pos_y, superficie)
+    tempo = Relogio(pos_x, pos_y, superficie, efeito_coleta_de_relógios)
+    tempo = Relogio(pos_x+50, pos_y, superficie, efeito_coleta_de_relógios)
 
     # criando as moedas
     imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
+    efeito_coleta_de_moedas = pygame.mixer.Sound('assets/sounds/freesound_collecting_coins_opção 01.wav')
     pos_y = 230
     pos_x = 500
     for _ in range(3):
         pos_x += 70
-        moeda = Moeda(pos_x, pos_y, superficie, imagem_moeda)
+        moeda = Moeda(pos_x, pos_y, superficie, imagem_moeda, efeito_coleta_de_moedas)
 
     imagem_labirinto = pg.image.load("assets/imagens/teste_colisao.png")
     labirinto = pg.sprite.Sprite()
