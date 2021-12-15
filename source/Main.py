@@ -1,3 +1,4 @@
+import pygame
 import pygame as pg
 from pygame import image
 from Tela import Tela
@@ -7,7 +8,6 @@ from Coletaveis import *
 from Labirinto import Labirinto
 from Contador import Contador
 from random import choice
-
 
 class Main:
     "classe principal do programa"
@@ -99,9 +99,8 @@ class Main:
                     if evento.button == 1:
                         self.jogando = True
                         self.rodando = False
-                        # toca o som do botão
-                        click = pygame.mixer.Sound(
-                            'assets/sounds/button_sound.wav')
+                        # toca o som do botão 
+                        click = pygame.mixer.Sound('assets/sounds/button_sound.wav')
                         click.play()
 
             # desenha tudo no menu
@@ -193,8 +192,8 @@ class Main:
             moeda.update(personagem)
             contador_coletaveis.update()
 
-            # if moeda.moedas_coletadas == quant_moedas:
-            chave.update(personagem)
+            if moeda.moedas_coletadas == quant_moedas:
+                chave.update(personagem)
 
             pg.display.flip()
             self.clock.tick(30)
