@@ -10,7 +10,7 @@ class Coletaveis(pg.sprite.Sprite):
         self.y = y
         self.janela = janela
         self.altura = altura
-        
+
         self.som = som
         self.image = pg.transform.scale(self.image, (largura, altura))
 
@@ -29,7 +29,7 @@ class Chave(Coletaveis):
     chave_ativa = []
 
     def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 64, largura: float = 64):
-        
+
         Chave.chave_ativa.append(self)
         self.image = pg.image.load("assets/Coletaveis/chave.png")
         self.sprites = []
@@ -41,6 +41,9 @@ class Chave(Coletaveis):
         self.atual = 0
         self.image = self.sprites[self.atual]
         super().__init__(x, y, janela, som)
+
+        self.rect_colisao = pg.Rect(
+            self.rect.x + 12, self.rect.y + 12, self.rect.width, self.rect.height)
 
     def coletar(self):
         Chave.coletou_chave = True
@@ -67,7 +70,7 @@ class Relogio(Coletaveis):
     dt = 0
 
     def __init__(self, x: float, y: float, janela: pg.Surface, som, contador, altura: float = 40, largura: float = 40, tempo_extra: float = 5):
-        
+
         Relogio.tempos_ativos.append(self)
 
         self.contador = contador
@@ -110,9 +113,8 @@ class Moeda(Coletaveis):
     moedas_coletadas = 0
     moedas_ativas = []
 
-
     def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 64, largura: float = 64):
-        
+
         Moeda.moedas_ativas.append(self)
 
         self.image = pg.image.load("assets/Coletaveis/moeda.png")
@@ -125,6 +127,9 @@ class Moeda(Coletaveis):
         self.atual = 0
         self.image = self.sprites[self.atual]
         super().__init__(x, y, janela, som)
+
+        self.rect_colisao = pg.Rect(
+            self.rect.x + 12, self.rect.y + 12, self.rect.width, self.rect.height)
 
     def coletar(self):
         Moeda.moedas_coletadas += 1
@@ -140,41 +145,45 @@ class Moeda(Coletaveis):
             moeda.desenhar()
 
             # Verificando colisao com o personagem
-            if personagem.rect.colliderect(moeda.rect):
+            if personagem.rect.colliderect(moeda.rect_colisao):
                 moeda.coletar()
                 self.som.play()
+
 
 class ContadorColetaveis():
     def __init__(self, janela):
         self.janela = janela
         self.fonte = pg.font.Font(None, 45)
-    
+
     def update(self):
-        
+
         # Mostrando as moedas
         # imagem da moeda
         moeda = pg.image.load("assets/Coletaveis/moeda.png")
         moeda = moeda.subsurface((64, 0), (64, 64))
         moeda = pg.transform.scale(moeda, (96, 96))
         moedarect = moeda.get_rect()
-        moedarect.topright = (770,-15)
+        moedarect.topright = (745, -15)
         self.janela.blit(moeda, moedarect)
 
         # texto da moeda
-        text_moedas = self.fonte.render(f'{Moeda.moedas_coletadas}' , True, coresRGB['branco'])
+        text_moedas = self.fonte.render(
+            f'{Moeda.moedas_coletadas}', True, coresRGB['branco'])
         text_moedasRect = text_moedas.get_rect()
         text_moedasRect.topright = (755, 20)
         self.janela.blit(text_moedas, text_moedasRect)
 
         # Mostrando a chave
         if Chave.coletou_chave:
-            self.chave_opaca = pg.image.load("assets/Coletaveis/chave_opaca.png")
+            self.chave_opaca = pg.image.load(
+                "assets/Coletaveis/chave_opaca.png")
             self.chaverect = self.chave_opaca.get_rect()
-            self.chaverect.topright = (700, -15)
+            self.chaverect.topright = (680, -15)
             self.janela.blit(self.chave_opaca, self.chaverect)
 
         else:
-            self.chave_transparente = pg.image.load("assets/Coletaveis/chave_transparente.png")
+            self.chave_transparente = pg.image.load(
+                "assets/Coletaveis/chave_transparente.png")
             self.chaverect = self.chave_transparente.get_rect()
-            self.chaverect.topright = (700, -15)
+            self.chaverect.topright = (680, -15)
             self.janela.blit(self.chave_transparente, self.chaverect)
