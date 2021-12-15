@@ -157,7 +157,4 @@ class Personagem(pg.sprite.Sprite):
 
         self.mover()
         self.andar()
-        self.janela.fill(coresRGB["branco"])
-        self.janela.blit(self.piso.image, self.piso.rect)
-        self.janela.blit(self.labirinto.image, self.labirinto.rect)
         self.desenhar()

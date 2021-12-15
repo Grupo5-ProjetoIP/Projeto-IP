@@ -11,3 +11,7 @@ class Labirinto:
         self.parede.image = pg.transform.scale(mascara, (800, 600))
         self.parede.rect = self.parede.image.get_rect()
         self.tela = tela
+
+    def desenhar_labirinto(self):
+        self.tela.blit(self.piso.image, self.piso.rect)
+        self.tela.blit(self.parede.image, self.parede.rect)
