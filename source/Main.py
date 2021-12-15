@@ -134,7 +134,7 @@ class Main:
         imagem_personagem = pg.image.load(
             "assets/Personagem/imagens/player.png")
         personagem = Personagem(self.superficie, labirinto.parede, labirinto.piso,
-                                20, 250, 35, 35, 5, coresRGB["azul"], imagem_personagem)
+                                385, 550, 35, 35, 5, coresRGB["azul"], imagem_personagem)
 
         while self.jogando:
             for evento in pg.event.get():
