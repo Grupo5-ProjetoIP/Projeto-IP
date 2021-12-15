@@ -7,6 +7,9 @@ class Contador:
 
         self.cor = coresRGB["branco"]
         self.janela = janela
+
+        self.bonus = False
+
         self.tempo = tempo
         self.ultima_contagem = pg.time.get_ticks()
         minutos = self.tempo//60
@@ -33,8 +36,13 @@ class Contador:
             if segundos < 10:
                 segundos = f"0{segundos}"
 
-            self.texto = self.fonte.render(
-                "Tempo= " + f'{minutos}:{segundos}', True, self.cor)
+            if self.bonus:
+                self.texto = self.fonte.render(
+                    "Tempo= " + f'{minutos}:{segundos} +5s', True, self.cor)
+                self.bonus = False
+            else:
+                self.texto = self.fonte.render(
+                    "Tempo= " + f'{minutos}:{segundos}', True, self.cor)
 
     def desenhar_contador(self):
         self.janela.blit(self.texto, [0, 0])

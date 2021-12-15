@@ -100,7 +100,7 @@ class Main:
 
         # criando a chave
         efeito_coleta_de_keys = pygame.mixer.Sound(
-            'assets/sounds/fesliyan studios_collecting _keys_opção 01.wav')
+            'assets/sounds/key_sound.wav')
         imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
         pos_x = 500
         pos_y = 230
@@ -109,17 +109,17 @@ class Main:
 
         # criando os relogios
         efeito_coleta_de_relógios = pygame.mixer.Sound(
-            'assets/sounds/orange free sounds_collecting_items_opção 04.wav')
+            'assets/sounds/clock_sound.wav')
         pos_x = 300
         pos_y = 230
         tempo = Relogio(pos_x, pos_y, self.superficie,
-                        efeito_coleta_de_relógios)
+                        efeito_coleta_de_relógios, contador_tempo)
         tempo = Relogio(pos_x+50, pos_y, self.superficie,
-                        efeito_coleta_de_relógios)
+                        efeito_coleta_de_relógios, contador_tempo)
 
         # criando as moedas
         efeito_coleta_de_moedas = pygame.mixer.Sound(
-            'assets/sounds/freesound_collecting_coins_opção 01.wav')
+            'assets/sounds/coin_sound.wav')
         imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
         pos_y = 230
         pos_x = 500
@@ -138,7 +138,7 @@ class Main:
         imagem_personagem = pg.image.load(
             "assets/Personagem/imagens/player.png")
         personagem = Personagem(self.superficie, labirinto.parede, labirinto.piso,
-                                20, 250, 35, 35, 5, coresRGB["azul"], imagem_personagem)
+                                385, 550, 35, 35, 5, coresRGB["azul"], imagem_personagem)
 
         while self.jogando and contador_tempo.tempo > 0:
             for evento in pg.event.get():

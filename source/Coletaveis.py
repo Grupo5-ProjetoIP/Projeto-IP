@@ -1,6 +1,7 @@
 import pygame
 import pygame as pg
 
+
 class Coletaveis(pg.sprite.Sprite):
     def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, som, altura: float = 40, largura: float = 40):
         super().__init__
@@ -17,10 +18,11 @@ class Coletaveis(pg.sprite.Sprite):
 
     def deletar(self, lista: list):
         lista.remove(self)
-    
+
     def desenhar(self):
         self.janela.blit(self.image, self.rect)
-        
+
+
 class Chave(Coletaveis):
     coletou_chave = False
     chave_ativa = []
@@ -33,7 +35,7 @@ class Chave(Coletaveis):
 
         self.sprites = []
         for i in range(4):
-            img = Chave.sprite_sheet.subsurface((i*64,0), (64,64))
+            img = Chave.sprite_sheet.subsurface((i*64, 0), (64, 64))
             img = pg.transform.scale(img, (largura, altura))
             self.sprites.append(img)
 
@@ -55,34 +57,39 @@ class Chave(Coletaveis):
             if personagem.rect.colliderect(self.rect):
                 self.coletar()
                 self.som.play()
-        
+
+
 class Relogio(Coletaveis):
     tempo_restante = 50
     tempos_ativos = []
     dt = 0
     sprite_sheet = pg.image.load("assets/Coletaveis/relogio_spritesheet.png")
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, image = sprite_sheet, altura: float = 40, largura: float = 40, tempo_extra: float = 25):
+    def __init__(self, x: float, y: float, janela: pg.Surface, som, contador, image=sprite_sheet, altura: float = 40, largura: float = 40, tempo_extra: float = 5):
         super().__init__(x, y, janela, image, som)
         Relogio.tempos_ativos.append(self)
+
+        self.contador = contador
         self.tempo_extra = tempo_extra
 
         self.sprites = []
         for i in range(6):
-            img = Relogio.sprite_sheet.subsurface((i*160,0), (160,160))
+            img = Relogio.sprite_sheet.subsurface((i*160, 0), (160, 160))
             img = pg.transform.scale(img, (largura, altura))
             self.sprites.append(img)
 
         self.atual = 0
         self.image = self.sprites[self.atual]
-        
+
     def coletar(self):
         Relogio.tempo_restante += self.tempo_extra
         print('Aumentou o tempo restante em', self.tempo_extra, 'segundos')
+        self.contador.bonus = True
+        self.contador.tempo += self.tempo_extra
         self.deletar(Relogio.tempos_ativos)
-    
-    def update(self, personagem, altura: float = 40, largura: float = 40 ):
-        
+
+    def update(self, personagem, altura: float = 40, largura: float = 40):
+
         for relogio in Relogio.tempos_ativos:
             relogio.atual += 0.3
             if relogio.atual >= len(self.sprites):
@@ -92,7 +99,7 @@ class Relogio(Coletaveis):
             if personagem.rect.colliderect(relogio.rect):
                 relogio.coletar()
                 self.som.play()
-        
+
 
 class Moeda(Coletaveis):
     moedas_coletadas = 0
@@ -106,7 +113,7 @@ class Moeda(Coletaveis):
 
         self.sprites = []
         for i in range(4):
-            img = Moeda.sprite_sheet.subsurface((i*64,0), (64,64))
+            img = Moeda.sprite_sheet.subsurface((i*64, 0), (64, 64))
             img = pg.transform.scale(img, (largura, altura))
             self.sprites.append(img)
 
@@ -117,7 +124,7 @@ class Moeda(Coletaveis):
         Moeda.moedas_coletadas += 1
         print(f'Total de moedas coletadas: {Moeda.moedas_coletadas}')
         self.deletar(Moeda.moedas_ativas)
-    
+
     def update(self, personagem):
         for moeda in Moeda.moedas_ativas:
             moeda.atual += 0.3
