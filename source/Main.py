@@ -1,10 +1,12 @@
 import pygame as pg
+from pygame import image
 from Tela import Tela
 from Personagem import *
 from Cores import coresRGB
 from Coletaveis import *
 from Labirinto import Labirinto
 from Contador import Contador
+from random import choice
 
 
 class Main:
@@ -23,6 +25,21 @@ class Main:
 
         self.rodando = True
         self.jogando = False
+
+        self.spawns = [(104, 567), (767, 567),
+                       (335, 567), (286, 506),
+                       (342, 506), (286, 506),
+                       (342, 506), (225, 443),
+                       (631, 386), (566, 382),
+                       (400, 390), (165, 390),
+                       (100, 390), (296, 336),
+                       (565, 327), (354, 276),
+                       (416, 276), (641, 265),
+                       (648, 210), (355, 216),
+                       (230, 216), (100, 216),
+                       (405, 155), (466, 155),
+                       (707, 52), (574, 95),
+                       (156, 92), (335, 36)]
 
     def menu_principal(self):
         """tela do menu"""
@@ -98,33 +115,41 @@ class Main:
         # criando contador de tempo
         contador_tempo = Contador(self.superficie, 60)
 
+        offset = -20
         # criando a chave
         efeito_coleta_de_keys = pygame.mixer.Sound(
             'assets/sounds/key_sound.wav')
         imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
-        pos_x = 500
-        pos_y = 230
+        pos_x, pos_y = choice(self.spawns)
+        self.spawns.remove((pos_x, pos_y))
+        print(self.spawns)
+        pos_x += offset
+        pos_y += offset
         chave = Chave(pos_x, pos_y, self.superficie,
                       imagem_chave, efeito_coleta_de_keys)
 
         # criando os relogios
         efeito_coleta_de_relogios = pygame.mixer.Sound(
             'assets/sounds/clock_sound.wav')
-        pos_x = 300
-        pos_y = 230
-        tempo = Relogio(pos_x, pos_y, self.superficie,
-                        efeito_coleta_de_relogios, contador_tempo)
-        tempo = Relogio(pos_x+50, pos_y, self.superficie,
-                        efeito_coleta_de_relogios, contador_tempo)
+        for i in range(2):
+            pos_x, pos_y = choice(self.spawns)
+            self.spawns.remove((pos_x, pos_y))
+            print(self.spawns)
+            pos_x += offset
+            pos_y += offset
+            tempo = Relogio(pos_x, pos_y, self.superficie,
+                            efeito_coleta_de_relogios, contador_tempo)
 
         # criando as moedas
         efeito_coleta_de_moedas = pygame.mixer.Sound(
             'assets/sounds/coin_sound.wav')
         imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
-        pos_y = 230
-        pos_x = 500
-        for _ in range(3):
-            pos_x += 70
+        for _ in range(10):
+            pos_x, pos_y = choice(self.spawns)
+            self.spawns.remove((pos_x, pos_y))
+            print(self.spawns)
+            pos_x += offset
+            pos_y += offset
             moeda = Moeda(pos_x, pos_y, self.superficie,
                           imagem_moeda, efeito_coleta_de_moedas)
 
