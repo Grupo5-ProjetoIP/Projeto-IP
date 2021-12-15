@@ -2,6 +2,7 @@ from Tela import Tela
 from Personagem import *
 from Cores import coresRGB
 from Coletaveis import *
+from Labirinto import Labirinto
 
 
 def main():
@@ -33,15 +34,14 @@ def main():
         pos_x += 70
         moeda = Moeda(pos_x, pos_y, superficie, imagem_moeda)
 
-    imagem_labirinto = pg.image.load("assets/imagens/teste_colisao.png")
-    labirinto = pg.sprite.Sprite()
-    labirinto.rect = imagem_labirinto.get_rect()
-    labirinto.image = pg.transform.scale(imagem_labirinto, (800, 600))
+    imagem_labirinto = pg.image.load("assets/imagens/fundo.png")
+    paredes_labirinto = pg.image.load("assets/imagens/Labirinto.png")
+    labirinto = Labirinto(imagem_labirinto, paredes_labirinto, superficie)
 
     # cria o personagem
     imagem_personagem = pg.image.load("assets/Personagem/imagens/player.png")
-    personagem = Personagem(superficie, labirinto,
-                            20, 230, 40, 40, 5, coresRGB["azul"], imagem_personagem)
+    personagem = Personagem(superficie, labirinto.parede, labirinto.piso,
+                            20, 250, 35, 35, 5, coresRGB["azul"], imagem_personagem)
 
     rodando = True
     while rodando:
@@ -49,7 +49,6 @@ def main():
             # sai do jogo
             if evento.type == pg.QUIT:
                 rodando = False
-
         personagem.update()
 
         tempo.update(personagem)
