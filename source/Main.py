@@ -108,14 +108,14 @@ class Main:
                       imagem_chave, efeito_coleta_de_keys)
 
         # criando os relogios
-        efeito_coleta_de_relógios = pygame.mixer.Sound(
+        efeito_coleta_de_relogios = pygame.mixer.Sound(
             'assets/sounds/clock_sound.wav')
         pos_x = 300
         pos_y = 230
         tempo = Relogio(pos_x, pos_y, self.superficie,
-                        efeito_coleta_de_relógios, contador_tempo)
+                        efeito_coleta_de_relogios, contador_tempo)
         tempo = Relogio(pos_x+50, pos_y, self.superficie,
-                        efeito_coleta_de_relógios, contador_tempo)
+                        efeito_coleta_de_relogios, contador_tempo)
 
         # criando as moedas
         efeito_coleta_de_moedas = pygame.mixer.Sound(
