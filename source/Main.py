@@ -99,6 +99,10 @@ class Main:
                     if evento.button == 1:
                         self.jogando = True
                         self.rodando = False
+                        # toca o som do botão
+                        click = pygame.mixer.Sound(
+                            'assets/sounds/button_sound.wav')
+                        click.play()
 
             # desenha tudo no menu
             self.superficie.fill(coresRGB["vermelho"])
