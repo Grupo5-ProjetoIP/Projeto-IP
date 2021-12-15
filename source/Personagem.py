@@ -7,14 +7,14 @@ class Personagem(pg.sprite.Sprite):
     """Um personagem simples que anda pela tela"""
 
     # inicializa os atributos
-    def __init__(self, janela: pg.Surface, labirinto: pg.Surface,
+    def __init__(self, janela: pg.Surface, labirinto: pg.Surface, piso: pg.Surface,
                  x: float, y: float, largura: float, altura: float, velocidade: float, cor: tuple, imagem: pg.Surface):
 
         super().__init__()
 
         self.janela = janela
         self.labirinto = labirinto
-
+        self.piso = piso
         self.largura = largura
         self.altura = altura
 
@@ -158,5 +158,6 @@ class Personagem(pg.sprite.Sprite):
         self.mover()
         self.andar()
         self.janela.fill(coresRGB["branco"])
+        self.janela.blit(self.piso.image, self.piso.rect)
         self.janela.blit(self.labirinto.image, self.labirinto.rect)
         self.desenhar()
