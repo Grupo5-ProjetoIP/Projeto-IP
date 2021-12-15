@@ -59,7 +59,7 @@ class Chave(Coletaveis):
             chave.desenhar()
 
             # Verificando colisao com o personagem
-            if personagem.rect.colliderect(self.rect):
+            if personagem.rect.colliderect(self.rect_colisao):
                 self.coletar()
                 self.som.play()
 
