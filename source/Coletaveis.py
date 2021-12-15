@@ -65,7 +65,7 @@ class Relogio(Coletaveis):
     dt = 0
     sprite_sheet = pg.image.load("assets/Coletaveis/relogio_spritesheet.png")
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, contador, image=sprite_sheet, altura: float = 40, largura: float = 40, tempo_extra: float = 10):
+    def __init__(self, x: float, y: float, janela: pg.Surface, som, contador, image=sprite_sheet, altura: float = 40, largura: float = 40, tempo_extra: float = 5):
         super().__init__(x, y, janela, image, som)
         Relogio.tempos_ativos.append(self)
 

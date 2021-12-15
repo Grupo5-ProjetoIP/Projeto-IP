@@ -26,6 +26,8 @@ class Main:
         self.rodando = True
         self.jogando = False
 
+        self.dificuldade = "normal"
+
         self.spawns = [(104, 567), (767, 567),
                        (335, 567), (286, 506),
                        (342, 506), (225, 443),
@@ -110,9 +112,15 @@ class Main:
     def game_loop(self):
         """loop do jogo"""
 
+        # definição de acordo com a dificuldade
+        if self.dificuldade == "normal":
+            quant_relogios = 4
+            quant_moedas = 10
+            tempo_bonus = 6
+
         # Objetos:
         # criando contador de tempo
-        contador_tempo = Contador(self.superficie, 60)
+        contador_tempo = Contador(self.superficie, 60, tempo_bonus)
 
         offset = -20
         # criando a chave
@@ -129,19 +137,19 @@ class Main:
         # criando os relogios
         efeito_coleta_de_relogios = pygame.mixer.Sound(
             'assets/sounds/clock_sound.wav')
-        for _ in range(2):
+        for _ in range(quant_relogios):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
             pos_x += offset
             pos_y += offset
             tempo = Relogio(pos_x, pos_y, self.superficie,
-                            efeito_coleta_de_relogios, contador_tempo)
+                            efeito_coleta_de_relogios, contador_tempo, tempo_extra=tempo_bonus)
 
         # criando as moedas
         efeito_coleta_de_moedas = pygame.mixer.Sound(
             'assets/sounds/coin_sound.wav')
         imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
-        for _ in range(10):
+        for _ in range(quant_moedas):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
             pos_x += offset
@@ -172,8 +180,10 @@ class Main:
             contador_tempo.update()
 
             tempo.update(personagem)
-            chave.update(personagem)
             moeda.update(personagem)
+
+            if moeda.moedas_coletadas == quant_moedas:
+                chave.update(personagem)
 
             pg.display.flip()
             self.clock.tick(30)

@@ -3,12 +3,13 @@ from Cores import coresRGB
 
 
 class Contador:
-    def __init__(self, janela, tempo):
+    def __init__(self, janela, tempo, tempo_bonus):
 
         self.cor = coresRGB["branco"]
         self.janela = janela
 
         self.bonus = False
+        self.tempo_bonus = tempo_bonus
 
         self.tempo = tempo
         self.ultima_contagem = pg.time.get_ticks()
@@ -38,7 +39,7 @@ class Contador:
 
             if self.bonus:
                 self.texto = self.fonte.render(
-                    "Tempo= " + f'{minutos}:{segundos}  +10s', True, self.cor)
+                    "Tempo= " + f'{minutos}:{segundos}  +{self.tempo_bonus}s', True, self.cor)
                 self.bonus = False
             else:
                 self.texto = self.fonte.render(
