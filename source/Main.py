@@ -28,7 +28,6 @@ class Main:
 
         self.spawns = [(104, 567), (767, 567),
                        (335, 567), (286, 506),
-                       (342, 506), (286, 506),
                        (342, 506), (225, 443),
                        (631, 386), (566, 382),
                        (400, 390), (165, 390),
@@ -122,7 +121,6 @@ class Main:
         imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
         pos_x, pos_y = choice(self.spawns)
         self.spawns.remove((pos_x, pos_y))
-        print(self.spawns)
         pos_x += offset
         pos_y += offset
         chave = Chave(pos_x, pos_y, self.superficie,
@@ -131,10 +129,9 @@ class Main:
         # criando os relogios
         efeito_coleta_de_relogios = pygame.mixer.Sound(
             'assets/sounds/clock_sound.wav')
-        for i in range(2):
+        for _ in range(2):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
-            print(self.spawns)
             pos_x += offset
             pos_y += offset
             tempo = Relogio(pos_x, pos_y, self.superficie,
@@ -147,7 +144,6 @@ class Main:
         for _ in range(10):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
-            print(self.spawns)
             pos_x += offset
             pos_y += offset
             moeda = Moeda(pos_x, pos_y, self.superficie,
