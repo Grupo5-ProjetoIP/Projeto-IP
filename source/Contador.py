@@ -38,7 +38,7 @@ class Contador:
 
             if self.bonus:
                 self.texto = self.fonte.render(
-                    "Tempo= " + f'{minutos}:{segundos}  +5s', True, self.cor)
+                    "Tempo= " + f'{minutos}:{segundos}  +10s', True, self.cor)
                 self.bonus = False
             else:
                 self.texto = self.fonte.render(
