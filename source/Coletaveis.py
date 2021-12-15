@@ -1,13 +1,15 @@
+import pygame
 import pygame as pg
 
 class Coletaveis(pg.sprite.Sprite):
-    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, altura: float = 40, largura: float = 40):
+    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, som, altura: float = 40, largura: float = 40):
         super().__init__
         self.x = x
         self.y = y
         self.janela = janela
         self.altura = altura
         self.image = image
+        self.som = som
         self.image = pg.transform.scale(self.image, (largura, altura))
 
         self.rect = self.image.get_rect()
@@ -25,8 +27,8 @@ class Chave(Coletaveis):
 
     sprite_sheet = pg.image.load("assets/Coletaveis/chave.png")
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, altura: float = 40, largura: float = 40):
-        super().__init__(x, y, janela, image)
+    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, som, altura: float = 40, largura: float = 40):
+        super().__init__(x, y, janela, image, som)
         Chave.chave_ativa.append(self)
 
         self.sprites = []
@@ -52,6 +54,7 @@ class Chave(Coletaveis):
             chave.desenhar()
             if personagem.rect.colliderect(self.rect):
                 self.coletar()
+                self.som.play()
         
 class Relogio(Coletaveis):
     tempo_restante = 50
@@ -59,8 +62,8 @@ class Relogio(Coletaveis):
     dt = 0
     sprite_sheet = pg.image.load("assets/Coletaveis/relogio_spritesheet.png")
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, image = sprite_sheet, altura: float = 40, largura: float = 40, tempo_extra: float = 25):
-        super().__init__(x, y, janela, image)
+    def __init__(self, x: float, y: float, janela: pg.Surface, som, image = sprite_sheet, altura: float = 40, largura: float = 40, tempo_extra: float = 25):
+        super().__init__(x, y, janela, image, som)
         Relogio.tempos_ativos.append(self)
         self.tempo_extra = tempo_extra
 
@@ -88,6 +91,7 @@ class Relogio(Coletaveis):
             relogio.desenhar()
             if personagem.rect.colliderect(relogio.rect):
                 relogio.coletar()
+                self.som.play()
         
 
 class Moeda(Coletaveis):
@@ -96,8 +100,8 @@ class Moeda(Coletaveis):
 
     sprite_sheet = pg.image.load("assets/Coletaveis/moeda.png")
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, altura: float = 40, largura: float = 40):
-        super().__init__(x, y, janela, image)
+    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, som, altura: float = 40, largura: float = 40):
+        super().__init__(x, y, janela, image, som)
         Moeda.moedas_ativas.append(self)
 
         self.sprites = []
@@ -123,3 +127,4 @@ class Moeda(Coletaveis):
             moeda.desenhar()
             if personagem.rect.colliderect(moeda.rect):
                 moeda.coletar()
+                self.som.play()
