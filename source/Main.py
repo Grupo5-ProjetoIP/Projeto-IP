@@ -132,8 +132,9 @@ class Main:
         self.spawns.remove((pos_x, pos_y))
         pos_x += offset
         pos_y += offset
+        
         chave = Chave(pos_x, pos_y, self.superficie,
-                      imagem_chave, efeito_coleta_de_keys)
+                      efeito_coleta_de_keys)
 
         # criando os relogios
         efeito_coleta_de_relogios = pygame.mixer.Sound(
@@ -156,7 +157,11 @@ class Main:
             pos_x += offset
             pos_y += offset
             moeda = Moeda(pos_x, pos_y, self.superficie,
-                          imagem_moeda, efeito_coleta_de_moedas)
+                          efeito_coleta_de_moedas)
+        
+        contador_coletaveis = ContadorColetaveis(self.superficie)
+        
+        
 
         # cria o labirinto
         imagem_labirinto = pg.image.load("assets/imagens/fundo.png")
@@ -182,6 +187,7 @@ class Main:
 
             tempo.update(personagem)
             moeda.update(personagem)
+            contador_coletaveis.update()
 
             if moeda.moedas_coletadas == quant_moedas:
                 chave.update(personagem)
