@@ -28,7 +28,7 @@ class Chave(Coletaveis):
     coletou_chave = False
     chave_ativa = []
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 40, largura: float = 40):
+    def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 64, largura: float = 64):
         
         Chave.chave_ativa.append(self)
         self.image = pg.image.load("assets/Coletaveis/chave.png")
@@ -111,7 +111,7 @@ class Moeda(Coletaveis):
     moedas_ativas = []
 
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 40, largura: float = 40):
+    def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 64, largura: float = 64):
         
         Moeda.moedas_ativas.append(self)
 
@@ -149,7 +149,7 @@ class contadorColetaveis():
         self.janela = janela
         self.fonte = pg.font.Font(None, 45)
     
-    def mostrarContador(self):
+    def update(self):
         
         # Mostrando as moedas
         # imagem da moeda

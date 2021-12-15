@@ -157,7 +157,7 @@ class Main:
             tempo.update(personagem)
             chave.update(personagem)
             moeda.update(personagem)
-            contador_coletaveis.mostrarContador()
+            contador_coletaveis.update()
 
             pg.display.flip()
             self.clock.tick(30)
