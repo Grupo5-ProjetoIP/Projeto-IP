@@ -1,6 +1,7 @@
 import pygame as pg
 from Cores import coresRGB
 
+
 class Labirinto:
     def __init__(self, image, mascara, tela) -> None:
         self.piso = pg.sprite.Sprite()
