@@ -97,7 +97,7 @@ class Relogio(Coletaveis):
     def update(self, personagem, altura: float = 40, largura: float = 40):
 
         for relogio in Relogio.tempos_ativos:
-            relogio.atual += 0.3
+            relogio.atual += 0.225
             if relogio.atual >= len(self.sprites):
                 relogio.atual = 0
             relogio.image = self.sprites[int(relogio.atual)]
