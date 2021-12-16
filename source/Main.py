@@ -194,8 +194,8 @@ class Main:
             moeda.update(personagem)
             contador_coletaveis.update()
 
-            # if moeda.moedas_coletadas == quant_moedas:
-            chave.update(personagem)
+            if moeda.moedas_coletadas == quant_moedas:
+                chave.update(personagem)
 
             pg.display.flip()
             self.clock.tick(30)

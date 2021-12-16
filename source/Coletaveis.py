@@ -52,7 +52,7 @@ class Chave(Coletaveis):
 
     def update(self, personagem):
         for chave in Chave.chave_ativa:
-            chave.atual += 0.3
+            chave.atual += 0.15
             if chave.atual >= len(self.sprites):
                 chave.atual = 0
             chave.image = self.sprites[int(chave.atual)]
@@ -138,7 +138,7 @@ class Moeda(Coletaveis):
 
     def update(self, personagem):
         for moeda in Moeda.moedas_ativas:
-            moeda.atual += 0.3
+            moeda.atual += 0.15
             if moeda.atual >= len(self.sprites):
                 moeda.atual = 0
             moeda.image = self.sprites[int(moeda.atual)]
