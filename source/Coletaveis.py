@@ -4,7 +4,7 @@ from Cores import coresRGB
 
 
 class Coletaveis(pg.sprite.Sprite):
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 40, largura: float = 40):
+    def __init__(self, x: float, y: float, janela: pg.Surface, som=None, altura: float = 40, largura: float = 40):
         super().__init__
         self.x = x
         self.y = y
@@ -28,7 +28,7 @@ class Chave(Coletaveis):
     coletou_chave = False
     chave_ativa = []
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 64, largura: float = 64):
+    def __init__(self, x: float, y: float, janela: pg.Surface, som=None, altura: float = 64, largura: float = 64):
 
         Chave.chave_ativa.append(self)
         self.image = pg.image.load("assets/Coletaveis/chave.png")
@@ -61,7 +61,8 @@ class Chave(Coletaveis):
             # Verificando colisao com o personagem
             if personagem.rect.colliderect(self.rect_colisao):
                 self.coletar()
-                self.som.play()
+                if self.som is not None:
+                    self.som.play()
 
 
 class Relogio(Coletaveis):
@@ -69,7 +70,7 @@ class Relogio(Coletaveis):
     tempos_ativos = []
     dt = 0
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, contador, altura: float = 40, largura: float = 40, tempo_extra: float = 5):
+    def __init__(self, x: float, y: float, janela: pg.Surface, contador, som=None, altura: float = 40, largura: float = 40, tempo_extra: float = 5):
 
         Relogio.tempos_ativos.append(self)
 
@@ -106,14 +107,15 @@ class Relogio(Coletaveis):
             # Verificando colisao com o personagem
             if personagem.rect.colliderect(relogio.rect):
                 relogio.coletar()
-                self.som.play()
+                if self.som is not None:
+                    self.som.play()
 
 
 class Moeda(Coletaveis):
     moedas_coletadas = 0
     moedas_ativas = []
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, altura: float = 64, largura: float = 64):
+    def __init__(self, x: float, y: float, janela: pg.Surface, som=None, altura: float = 64, largura: float = 64):
 
         Moeda.moedas_ativas.append(self)
 
@@ -147,7 +149,8 @@ class Moeda(Coletaveis):
             # Verificando colisao com o personagem
             if personagem.rect.colliderect(moeda.rect_colisao):
                 moeda.coletar()
-                self.som.play()
+                if self.som is not None:
+                    self.som.play()
 
 
 class ContadorColetaveis():
