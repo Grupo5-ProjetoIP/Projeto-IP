@@ -29,7 +29,7 @@ class Main:
 
         self.dificuldade = "normal"
 
-        self.com_som = False
+        self.com_som = True
 
         self.spawns = [(104, 567), (767, 567),
                        (335, 567), (286, 506),
