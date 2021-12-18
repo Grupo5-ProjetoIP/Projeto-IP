@@ -29,6 +29,8 @@ class Main:
 
         self.dificuldade = "normal"
 
+        self.com_som = True
+
         self.spawns = [(104, 567), (767, 567),
                        (335, 567), (286, 506),
                        (342, 506), (225, 443),
@@ -101,9 +103,15 @@ class Main:
                         self.jogando = True
                         self.rodando = False
                         # toca o som do botão
-                        click = pygame.mixer.Sound(
-                            'assets/sounds/button_sound.wav')
-                        click.play()
+                        # evita o bug do pygame com som
+                        try:
+                            click = pygame.mixer.Sound(
+                                'assets/sounds/button_sound.wav')
+                        except pygame.error:
+                            self.com_som = False
+
+                        if self.com_som:
+                            click.play()
 
             # desenha tudo no menu
             self.superficie.fill(coresRGB["vermelho"])
@@ -130,41 +138,71 @@ class Main:
 
         # criando a chave
         offset = -32
-        efeito_coleta_de_keys = pygame.mixer.Sound(
-            'assets/sounds/key_sound.wav')
+
+        # evita o erro do pygame com sons
+        try:
+            efeito_coleta_de_keys = pygame.mixer.Sound(
+                'assets/sounds/key_sound.wav')
+        except pygame.error:
+            self.com_som = False
+
         imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
         pos_x, pos_y = choice(self.spawns)
         self.spawns.remove((pos_x, pos_y))
         pos_x += offset
         pos_y += offset
 
-        chave = Chave(pos_x, pos_y, self.superficie,
-                      efeito_coleta_de_keys)
+        if self.com_som:
+            chave = Chave(pos_x, pos_y, self.superficie,
+                          efeito_coleta_de_keys)
+        else:
+            chave = Chave(pos_x, pos_y, self.superficie)
 
         # criando os relogios
         offset = -20
-        efeito_coleta_de_relogios = pygame.mixer.Sound(
-            'assets/sounds/clock_sound.wav')
+
+        # evita o erro do pygame com sons
+        try:
+            efeito_coleta_de_relogios = pygame.mixer.Sound(
+                'assets/sounds/clock_sound.wav')
+        except pygame.error:
+            self.com_som = False
+
         for _ in range(quant_relogios):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
             pos_x += offset
             pos_y += offset
-            tempo = Relogio(pos_x, pos_y, self.superficie,
-                            efeito_coleta_de_relogios, contador_tempo, tempo_extra=tempo_bonus)
+
+            if self.com_som:
+                tempo = Relogio(pos_x, pos_y, self.superficie,
+                                contador_tempo, efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
+            else:
+                tempo = Relogio(pos_x, pos_y, self.superficie,
+                                contador_tempo, tempo_extra=tempo_bonus)
 
         # criando as moedas
         offset = -32
-        efeito_coleta_de_moedas = pygame.mixer.Sound(
-            'assets/sounds/coin_sound.wav')
+
+        # evita o bug do pygame com sons
+        try:
+            efeito_coleta_de_moedas = pygame.mixer.Sound(
+                'assets/sounds/coin_sound.wav')
+        except pygame.error:
+            self.com_som = False
+
         imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
         for _ in range(quant_moedas):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
             pos_x += offset
             pos_y += offset
-            moeda = Moeda(pos_x, pos_y, self.superficie,
-                          efeito_coleta_de_moedas)
+
+            if self.com_som:
+                moeda = Moeda(pos_x, pos_y, self.superficie,
+                              efeito_coleta_de_moedas)
+            else:
+                moeda = Moeda(pos_x, pos_y, self.superficie)
 
         contador_coletaveis = ContadorColetaveis(self.superficie)
 
