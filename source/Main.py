@@ -1,10 +1,13 @@
+import pygame
 import pygame as pg
+from pygame import image
 from Tela import Tela
 from Personagem import *
 from Cores import coresRGB
 from Coletaveis import *
 from Labirinto import Labirinto
 from Contador import Contador
+from random import choice
 
 
 class Main:
@@ -23,6 +26,24 @@ class Main:
 
         self.rodando = True
         self.jogando = False
+
+        self.dificuldade = "normal"
+
+        self.com_som = True
+
+        self.spawns = [(104, 567), (767, 567),
+                       (335, 567), (286, 506),
+                       (342, 506), (225, 443),
+                       (631, 386), (566, 382),
+                       (400, 390), (165, 390),
+                       (100, 390), (296, 336),
+                       (565, 327), (354, 276),
+                       (416, 276), (641, 265),
+                       (648, 210), (355, 216),
+                       (230, 216), (100, 216),
+                       (405, 155), (466, 155),
+                       (707, 52), (574, 95),
+                       (156, 92), (335, 36)]
 
     def menu_principal(self):
         """tela do menu"""
@@ -81,6 +102,16 @@ class Main:
                     if evento.button == 1:
                         self.jogando = True
                         self.rodando = False
+                        # toca o som do botão
+                        # evita o bug do pygame com som
+                        try:
+                            click = pygame.mixer.Sound(
+                                'assets/sounds/button_sound.wav')
+                        except pygame.error:
+                            self.com_som = False
+
+                        if self.com_som:
+                            click.play()
 
             # desenha tudo no menu
             self.superficie.fill(coresRGB["vermelho"])
@@ -94,39 +125,86 @@ class Main:
     def game_loop(self):
         """loop do jogo"""
 
+        # definição de acordo com a dificuldade
+        if self.dificuldade == "normal":
+            tempo = 80
+            quant_relogios = 4
+            quant_moedas = 10
+            tempo_bonus = 8
+
         # Objetos:
         # criando contador de tempo
-        contador_tempo = Contador(self.superficie, 60)
+        contador_tempo = Contador(self.superficie, tempo, tempo_bonus)
 
         # criando a chave
-        efeito_coleta_de_keys = pygame.mixer.Sound(
-            'assets/sounds/key_sound.wav')
+        offset = -32
+
+        # evita o erro do pygame com sons
+        try:
+            efeito_coleta_de_keys = pygame.mixer.Sound(
+                'assets/sounds/key_sound.wav')
+        except pygame.error:
+            self.com_som = False
+
         imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
-        pos_x = 500
-        pos_y = 230
-        chave = Chave(pos_x, pos_y, self.superficie,
-                      imagem_chave, efeito_coleta_de_keys)
+        pos_x, pos_y = choice(self.spawns)
+        self.spawns.remove((pos_x, pos_y))
+        pos_x += offset
+        pos_y += offset
+
+        if self.com_som:
+            chave = Chave(pos_x, pos_y, self.superficie,
+                          efeito_coleta_de_keys)
+        else:
+            chave = Chave(pos_x, pos_y, self.superficie)
 
         # criando os relogios
-        efeito_coleta_de_relogios = pygame.mixer.Sound(
-            'assets/sounds/clock_sound.wav')
-        pos_x = 300
-        pos_y = 230
-        tempo = Relogio(pos_x, pos_y, self.superficie,
-                        efeito_coleta_de_relogios, contador_tempo)
-        tempo = Relogio(pos_x+50, pos_y, self.superficie,
-                        efeito_coleta_de_relogios, contador_tempo)
+        offset = -20
+
+        # evita o erro do pygame com sons
+        try:
+            efeito_coleta_de_relogios = pygame.mixer.Sound(
+                'assets/sounds/clock_sound.wav')
+        except pygame.error:
+            self.com_som = False
+
+        for _ in range(quant_relogios):
+            pos_x, pos_y = choice(self.spawns)
+            self.spawns.remove((pos_x, pos_y))
+            pos_x += offset
+            pos_y += offset
+
+            if self.com_som:
+                tempo = Relogio(pos_x, pos_y, self.superficie,
+                                contador_tempo, efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
+            else:
+                tempo = Relogio(pos_x, pos_y, self.superficie,
+                                contador_tempo, tempo_extra=tempo_bonus)
 
         # criando as moedas
-        efeito_coleta_de_moedas = pygame.mixer.Sound(
-            'assets/sounds/coin_sound.wav')
+        offset = -32
+
+        # evita o bug do pygame com sons
+        try:
+            efeito_coleta_de_moedas = pygame.mixer.Sound(
+                'assets/sounds/coin_sound.wav')
+        except pygame.error:
+            self.com_som = False
+
         imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
-        pos_y = 230
-        pos_x = 500
-        for _ in range(3):
-            pos_x += 70
-            moeda = Moeda(pos_x, pos_y, self.superficie,
-                          imagem_moeda, efeito_coleta_de_moedas)
+        for _ in range(quant_moedas):
+            pos_x, pos_y = choice(self.spawns)
+            self.spawns.remove((pos_x, pos_y))
+            pos_x += offset
+            pos_y += offset
+
+            if self.com_som:
+                moeda = Moeda(pos_x, pos_y, self.superficie,
+                              efeito_coleta_de_moedas)
+            else:
+                moeda = Moeda(pos_x, pos_y, self.superficie)
+
+        contador_coletaveis = ContadorColetaveis(self.superficie)
 
         # cria o labirinto
         imagem_labirinto = pg.image.load("assets/imagens/fundo.png")
@@ -151,8 +229,11 @@ class Main:
             contador_tempo.update()
 
             tempo.update(personagem)
-            chave.update(personagem)
             moeda.update(personagem)
+            contador_coletaveis.update()
+
+            if moeda.moedas_coletadas == quant_moedas:
+                chave.update(personagem)
 
             pg.display.flip()
             self.clock.tick(30)

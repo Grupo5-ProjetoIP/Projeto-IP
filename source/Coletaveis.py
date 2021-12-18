@@ -1,15 +1,16 @@
-import pygame
 import pygame as pg
+import pygame
+from Cores import coresRGB
 
 
 class Coletaveis(pg.sprite.Sprite):
-    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, som, altura: float = 40, largura: float = 40):
+    def __init__(self, x: float, y: float, janela: pg.Surface, som=None, altura: float = 40, largura: float = 40):
         super().__init__
         self.x = x
         self.y = y
         self.janela = janela
         self.altura = altura
-        self.image = image
+
         self.som = som
         self.image = pg.transform.scale(self.image, (largura, altura))
 
@@ -27,20 +28,22 @@ class Chave(Coletaveis):
     coletou_chave = False
     chave_ativa = []
 
-    sprite_sheet = pg.image.load("assets/Coletaveis/chave.png")
+    def __init__(self, x: float, y: float, janela: pg.Surface, som=None, altura: float = 64, largura: float = 64):
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, som, altura: float = 40, largura: float = 40):
-        super().__init__(x, y, janela, image, som)
         Chave.chave_ativa.append(self)
-
+        self.image = pg.image.load("assets/Coletaveis/chave.png")
         self.sprites = []
         for i in range(4):
-            img = Chave.sprite_sheet.subsurface((i*64, 0), (64, 64))
+            img = self.image.subsurface((i*64, 0), (64, 64))
             img = pg.transform.scale(img, (largura, altura))
             self.sprites.append(img)
 
         self.atual = 0
         self.image = self.sprites[self.atual]
+        super().__init__(x, y, janela, som)
+
+        self.rect_colisao = pg.Rect(
+            self.rect.x + 12, self.rect.y + 12, self.rect.width, self.rect.height)
 
     def coletar(self):
         Chave.coletou_chave = True
@@ -49,37 +52,41 @@ class Chave(Coletaveis):
 
     def update(self, personagem):
         for chave in Chave.chave_ativa:
-            chave.atual += 0.3
+            chave.atual += 0.15
             if chave.atual >= len(self.sprites):
                 chave.atual = 0
             chave.image = self.sprites[int(chave.atual)]
             chave.desenhar()
-            if personagem.rect.colliderect(self.rect):
+
+            # Verificando colisao com o personagem
+            if personagem.rect.colliderect(self.rect_colisao):
                 self.coletar()
-                self.som.play()
+                if self.som is not None:
+                    self.som.play()
 
 
 class Relogio(Coletaveis):
     tempo_restante = 50
     tempos_ativos = []
     dt = 0
-    sprite_sheet = pg.image.load("assets/Coletaveis/relogio_spritesheet.png")
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, som, contador, image=sprite_sheet, altura: float = 40, largura: float = 40, tempo_extra: float = 5):
-        super().__init__(x, y, janela, image, som)
+    def __init__(self, x: float, y: float, janela: pg.Surface, contador, som=None, altura: float = 40, largura: float = 40, tempo_extra: float = 5):
+
         Relogio.tempos_ativos.append(self)
 
         self.contador = contador
         self.tempo_extra = tempo_extra
+        self.image = pg.image.load("assets/Coletaveis/relogio_spritesheet.png")
 
         self.sprites = []
         for i in range(6):
-            img = Relogio.sprite_sheet.subsurface((i*160, 0), (160, 160))
+            img = self.image.subsurface((i*160, 0), (160, 160))
             img = pg.transform.scale(img, (largura, altura))
             self.sprites.append(img)
 
         self.atual = 0
         self.image = self.sprites[self.atual]
+        super().__init__(x, y, janela, som)
 
     def coletar(self):
         Relogio.tempo_restante += self.tempo_extra
@@ -91,34 +98,40 @@ class Relogio(Coletaveis):
     def update(self, personagem, altura: float = 40, largura: float = 40):
 
         for relogio in Relogio.tempos_ativos:
-            relogio.atual += 0.3
+            relogio.atual += 0.225
             if relogio.atual >= len(self.sprites):
                 relogio.atual = 0
             relogio.image = self.sprites[int(relogio.atual)]
             relogio.desenhar()
+
+            # Verificando colisao com o personagem
             if personagem.rect.colliderect(relogio.rect):
                 relogio.coletar()
-                self.som.play()
+                if self.som is not None:
+                    self.som.play()
 
 
 class Moeda(Coletaveis):
     moedas_coletadas = 0
     moedas_ativas = []
 
-    sprite_sheet = pg.image.load("assets/Coletaveis/moeda.png")
+    def __init__(self, x: float, y: float, janela: pg.Surface, som=None, altura: float = 64, largura: float = 64):
 
-    def __init__(self, x: float, y: float, janela: pg.Surface, image: pg.Surface, som, altura: float = 40, largura: float = 40):
-        super().__init__(x, y, janela, image, som)
         Moeda.moedas_ativas.append(self)
 
+        self.image = pg.image.load("assets/Coletaveis/moeda.png")
         self.sprites = []
         for i in range(4):
-            img = Moeda.sprite_sheet.subsurface((i*64, 0), (64, 64))
+            img = self.image.subsurface((i*64, 0), (64, 64))
             img = pg.transform.scale(img, (largura, altura))
             self.sprites.append(img)
 
         self.atual = 0
         self.image = self.sprites[self.atual]
+        super().__init__(x, y, janela, som)
+
+        self.rect_colisao = pg.Rect(
+            self.rect.x + 12, self.rect.y + 12, self.rect.width, self.rect.height)
 
     def coletar(self):
         Moeda.moedas_coletadas += 1
@@ -127,11 +140,53 @@ class Moeda(Coletaveis):
 
     def update(self, personagem):
         for moeda in Moeda.moedas_ativas:
-            moeda.atual += 0.3
+            moeda.atual += 0.15
             if moeda.atual >= len(self.sprites):
                 moeda.atual = 0
             moeda.image = self.sprites[int(moeda.atual)]
             moeda.desenhar()
-            if personagem.rect.colliderect(moeda.rect):
+
+            # Verificando colisao com o personagem
+            if personagem.rect.colliderect(moeda.rect_colisao):
                 moeda.coletar()
-                self.som.play()
+                if self.som is not None:
+                    self.som.play()
+
+
+class ContadorColetaveis():
+    def __init__(self, janela):
+        self.janela = janela
+        self.fonte = pg.font.Font(None, 45)
+
+    def update(self):
+
+        # Mostrando as moedas
+        # imagem da moeda
+        moeda = pg.image.load("assets/Coletaveis/moeda.png")
+        moeda = moeda.subsurface((64, 0), (64, 64))
+        moeda = pg.transform.scale(moeda, (96, 96))
+        moedarect = moeda.get_rect()
+        moedarect.topright = (745, -15)
+        self.janela.blit(moeda, moedarect)
+
+        # texto da moeda
+        text_moedas = self.fonte.render(
+            f'{Moeda.moedas_coletadas}', True, coresRGB['branco'])
+        text_moedasRect = text_moedas.get_rect()
+        text_moedasRect.topright = (755, 20)
+        self.janela.blit(text_moedas, text_moedasRect)
+
+        # Mostrando a chave
+        if Chave.coletou_chave:
+            self.chave_opaca = pg.image.load(
+                "assets/Coletaveis/chave_opaca.png")
+            self.chaverect = self.chave_opaca.get_rect()
+            self.chaverect.topright = (680, -15)
+            self.janela.blit(self.chave_opaca, self.chaverect)
+
+        else:
+            self.chave_transparente = pg.image.load(
+                "assets/Coletaveis/chave_transparente.png")
+            self.chaverect = self.chave_transparente.get_rect()
+            self.chaverect.topright = (680, -15)
+            self.janela.blit(self.chave_transparente, self.chaverect)
