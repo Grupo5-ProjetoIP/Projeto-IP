@@ -207,7 +207,7 @@ class Main:
         if self.dificuldade == "normal":
             tempo = 80
             quant_relogios = 4
-            quant_moedas = 1
+            quant_moedas = 10
             tempo_bonus = 8
 
         # Objetos:
