@@ -45,6 +45,9 @@ class Main:
                        (707, 52), (574, 95),
                        (156, 92), (335, 36)]
 
+        self.game_over = False
+        self.vitoria = False
+
     def menu_principal(self):
         """tela do menu"""
 
@@ -175,10 +178,10 @@ class Main:
             pos_y += offset
 
             if self.com_som:
-                tempo = Relogio(pos_x, pos_y, self.superficie,
+                relogio = Relogio(pos_x, pos_y, self.superficie,
                                 contador_tempo, efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
             else:
-                tempo = Relogio(pos_x, pos_y, self.superficie,
+                relogio = Relogio(pos_x, pos_y, self.superficie,
                                 contador_tempo, tempo_extra=tempo_bonus)
 
         # criando as moedas
@@ -218,17 +221,64 @@ class Main:
         personagem = Personagem(self.superficie, labirinto.parede, labirinto.piso,
                                 385, 550, 35, 35, 5, coresRGB["azul"], imagem_personagem)
 
-        while self.jogando and contador_tempo.tempo > 0:
+        while self.jogando:
             for evento in pg.event.get():
                 # sai do jogo
                 if evento.type == pg.QUIT:
                     self.jogando = False
+            
+            # Game over quando o tempo acabar
+            if contador_tempo.tempo <= 0:
+
+                fonte = pygame.font.SysFont(None, 20, True, False)
+ 
+                mensagem = "aperte espaço para usar os seus poderes de edição de vídeo e voltar no tempo para tentar novamente"
+                texto_formatado = fonte.render(mensagem, True, (255,255,255))
+                ret_texto = texto_formatado.get_rect()
+
+                self.game_over = True
+                while self.game_over:
+                    self.superficie.fill((0,0,0))
+                    for event in pygame.event.get():
+                        if event.type == pg.QUIT:
+                            pygame.quit()
+                            exit()
+                        if event.type == pg.KEYDOWN:
+                            if event.key == pg.K_SPACE:
+                                self.reiniciar_jogo()
+
+                    ret_texto.center = (390, 340)
+                    self.superficie.blit(texto_formatado, ret_texto)
+                    pygame.display.update()
+
+            # Tela de vitoria quando o jogador estiver com a chave e colidir com a porta
+            if Chave.coletou_chave:
+                if personagem.rect.colliderect(pg.Rect(370, 50, 60, 30)):
+                    fonte = pygame.font.SysFont(None, 20, True, False)
+
+                    mensagem = "VITÓRIA!!!! APERTE ESPAÇO PARA JOGAR NOVAMENTE"
+                    texto_formatado = fonte.render(mensagem, True, (255,255,255))
+                    ret_texto = texto_formatado.get_rect()
+
+                    self.vitoria = True
+                    while self.vitoria:
+                        self.superficie.fill((0,0,0))
+                        for event in pygame.event.get():
+                            if event.type == pg.QUIT:
+                                pygame.quit()
+                                exit()
+                            if event.type == pg.KEYDOWN:
+                                if event.key == pg.K_SPACE:
+                                    self.reiniciar_jogo()
+                        ret_texto.center = (390, 340)
+                        self.superficie.blit(texto_formatado, ret_texto)
+                        pygame.display.update()
 
             labirinto.desenhar_labirinto()
             personagem.update()
             contador_tempo.update()
 
-            tempo.update(personagem)
+            relogio.update(personagem)
             moeda.update(personagem)
             contador_coletaveis.update()
 
@@ -237,6 +287,18 @@ class Main:
 
             pg.display.flip()
             self.clock.tick(30)
+
+    def reiniciar_jogo(self):
+        Moeda.moedas_coletadas = 0
+        Moeda.moedas_ativas = []
+        Chave.coletou_chave = False
+        Relogio.tempos_ativos = []
+        self.game_over = False
+        self.__init__()
+        self.rodando = False
+        self.jogando = True
+        self.update()
+
 
     def update(self):
         self.menu_principal()
