@@ -207,7 +207,7 @@ class Main:
         if self.dificuldade == "normal":
             tempo = 80
             quant_relogios = 4
-            quant_moedas = 10
+            quant_moedas = 1
             tempo_bonus = 8
 
         # Objetos:
@@ -254,10 +254,10 @@ class Main:
 
             if self.com_som:
                 relogio = Relogio(pos_x, pos_y, self.superficie,
-                                contador_tempo, efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
+                                  contador_tempo, efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
             else:
                 relogio = Relogio(pos_x, pos_y, self.superficie,
-                                contador_tempo, tempo_extra=tempo_bonus)
+                                  contador_tempo, tempo_extra=tempo_bonus)
 
         # criando as moedas
         offset = -32
@@ -301,19 +301,19 @@ class Main:
                 # sai do jogo
                 if evento.type == pg.QUIT:
                     self.jogando = False
-            
+
             # Game over quando o tempo acabar
             if contador_tempo.tempo <= 0:
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
- 
+
                 mensagem = "aperte espaço para usar os seus poderes de edição de vídeo e voltar no tempo para tentar novamente"
-                texto_formatado = fonte.render(mensagem, True, (255,255,255))
+                texto_formatado = fonte.render(mensagem, True, (255, 255, 255))
                 ret_texto = texto_formatado.get_rect()
 
                 self.game_over = True
                 while self.game_over:
-                    self.superficie.fill((0,0,0))
+                    self.superficie.fill((0, 0, 0))
                     for event in pygame.event.get():
                         if event.type == pg.QUIT:
                             pygame.quit()
@@ -332,12 +332,13 @@ class Main:
                     fonte = pygame.font.SysFont(None, 20, True, False)
 
                     mensagem = "VITÓRIA!!!! APERTE ESPAÇO PARA JOGAR NOVAMENTE"
-                    texto_formatado = fonte.render(mensagem, True, (255,255,255))
+                    texto_formatado = fonte.render(
+                        mensagem, True, (255, 255, 255))
                     ret_texto = texto_formatado.get_rect()
 
                     self.vitoria = True
                     while self.vitoria:
-                        self.superficie.fill((0,0,0))
+                        self.superficie.fill((0, 0, 0))
                         for event in pygame.event.get():
                             if event.type == pg.QUIT:
                                 pygame.quit()
@@ -373,7 +374,6 @@ class Main:
         self.rodando = False
         self.jogando = True
         self.update()
-
 
     def update(self):
         self.menu_principal()
