@@ -17,7 +17,7 @@ class Tela:
         tela.fill(self.cor_fundo)
 
         # define o título
-        titulo = f"tela x={self.largura}  y={self.altura}"
+        titulo = "Cin Maze"
         pg.display.set_caption(titulo)
 
         return tela
