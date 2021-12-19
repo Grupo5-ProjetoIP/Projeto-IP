@@ -26,6 +26,7 @@ class Main:
 
         self.rodando = True
         self.historia = False
+        self.dificuldades = False
         self.jogando = False
 
         self.dificuldade = "normal"
@@ -85,7 +86,7 @@ class Main:
 
         # textos
         # botões
-        botao = pg.font.SysFont(None, 60)
+        botao = pg.font.SysFont(None, 80)
         # botão iniciar
         botao_iniciar = botao.render(
             "Iniciar", True, coresRGB["branco"])
@@ -198,6 +199,76 @@ class Main:
                 pg.display.flip()
                 self.clock.tick(30)
 
+        def tela_dificuldades():
+
+            fundo = pg.image.load('assets/imagens/fundo_menu.png')
+            # textos
+            # titulo
+            titulo = pg.font.SysFont(None, 80)
+            objeto_titulo = titulo.render(
+                "Escolha uma dificuldade:", True, coresRGB["branco"])
+            titulo_rect = objeto_titulo.get_rect()
+            titulo_rect.topleft = (self.superficie.get_width() / 2 - titulo_rect.width / 2,
+                                   200)
+
+            # botoes
+            botao_normal = botao.render(
+                "Normal", True, coresRGB["branco"])
+            normal_rect = botao_normal.get_rect()
+            normal_rect.topleft = (self.superficie.get_width() / 2 - normal_rect.width / 2,
+                                   370)
+
+            botao_dificil = botao.render(
+                "Difícil", True, coresRGB["branco"])
+            dificil_rect = botao_dificil.get_rect()
+            dificil_rect.topleft = (self.superficie.get_width() / 2 - dificil_rect.width / 2,
+                                    470)
+
+            while self.dificuldades:
+                for evento in pg.event.get():
+                    # sai do jogo
+                    if evento.type == pg.QUIT:
+                        self.dificuldades = False
+                        self.rodando = False
+                    elif evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
+                        self.dificuldades = False
+                        self.rodando = True
+                    elif evento.type == pg.MOUSEBUTTONDOWN:
+                        if evento.button == 1:
+                            if interagir_botao(normal_rect, botao_normal, botao, selecao, "Normal"):
+                                # toca o som do botão
+                                if self.com_som:
+                                    self.click.play()
+                                    pg.mixer.music.play(-1)
+
+                                self.dificuldade = "normal"
+                                self.jogando = True
+                                self.dificuldades = False
+
+                            elif interagir_botao(dificil_rect, botao_dificil, botao, selecao, "Difícil"):
+                                # toca o som do botão
+                                if self.com_som:
+                                    self.click.play()
+                                    pg.mixer.music.play(-1)
+
+                                self.dificuldade = "dificil"
+                                self.jogando = True
+                                self.dificuldades = False
+
+                # desenha tudo na tela
+                self.superficie.fill(coresRGB["vermelho"])
+                self.superficie.blit(fundo, (0, 0))
+
+                self.superficie.blit(objeto_titulo, titulo_rect)
+
+                interagir_botao(normal_rect, botao_normal,
+                                botao, selecao, "Normal")
+                interagir_botao(dificil_rect, botao_dificil,
+                                botao, selecao, "Difícil")
+
+                pg.display.flip()
+                self.clock.tick(30)
+
         # loop do menu
         while self.rodando:
             for evento in pg.event.get():
@@ -211,10 +282,10 @@ class Main:
                             # toca o som do botão
                             if self.com_som:
                                 self.click.play()
-                                pg.mixer.music.play(-1)
 
-                            self.jogando = True
+                            self.dificuldades = True
                             self.rodando = False
+                            tela_dificuldades()
 
                         elif interagir_botao(historia_rect, botao_historia, botao, selecao, "Historia"):
                             # toca o som do botão
@@ -250,8 +321,14 @@ class Main:
         if self.dificuldade == "normal":
             tempo = 90
             quant_relogios = 5
-            quant_moedas = 10
+            quant_moedas = 8
             tempo_bonus = 8
+
+        elif self.dificuldade == "dificil":
+            tempo = 80
+            quant_relogios = 3
+            quant_moedas = 10
+            tempo_bonus = 5
 
         # Objetos:
         # criando contador de tempo
