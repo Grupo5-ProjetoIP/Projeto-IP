@@ -124,7 +124,7 @@ class Personagem(pg.sprite.Sprite):
         else:
             raise ValueError(f"{direcao} não é uma direção")
 
-        if pg.sprite.collide_mask(sprite_aux, self.labirinto):
+        if pg.sprite.collide_mask(sprite_aux, self.labirinto) or sprite_aux.rect.colliderect(pg.Rect(370, 37.5, 60, 30)):
             return True
         return False
 

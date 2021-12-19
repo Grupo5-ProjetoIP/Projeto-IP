@@ -26,6 +26,7 @@ class Main:
 
         self.rodando = True
         self.historia = False
+        self.dificuldades = False
         self.jogando = False
 
         self.dificuldade = "normal"
@@ -49,6 +50,35 @@ class Main:
         self.game_over = False
         self.vitoria = False
 
+        # carrega os sons
+        try:
+            pg.mixer.music.load('assets/sounds/musica.mp3')
+            self.game_over_som = pg.mixer.Sound('assets/sounds/game_over.mp3')
+            self.victory = pg.mixer.Sound('assets/sounds/victory.mp3')
+
+            self.click = pg.mixer.Sound('assets/sounds/button_sound.wav')
+            self.efeito_coleta_de_keys = pg.mixer.Sound(
+                'assets/sounds/key_sound.wav')
+            self.efeito_coleta_de_relogios = pg.mixer.Sound(
+                'assets/sounds/clock_sound.wav')
+            self.efeito_coleta_de_moedas = pg.mixer.Sound(
+                'assets/sounds/coin_sound.wav')
+
+        except pygame.error:
+            self.com_som = False
+
+        if self.com_som:
+            pg.mixer.music.set_volume(0.25)
+
+            self.game_over_som.set_volume(0.6)
+            self.victory.set_volume(0.5)
+            self.efeito_coleta_de_keys.set_volume(0.5)
+            self.efeito_coleta_de_moedas.set_volume(0.5)
+            self.efeito_coleta_de_relogios.set_volume(0.25)
+
+            # toca a música
+            pg.mixer.music.play(-1, fade_ms=2000)
+
     def menu_principal(self):
         """tela do menu"""
 
@@ -62,7 +92,7 @@ class Main:
 
         # textos
         # botões
-        botao = pg.font.SysFont(None, 60)
+        botao = pg.font.SysFont(None, 80)
         # botão iniciar
         botao_iniciar = botao.render(
             "Iniciar", True, coresRGB["branco"])
@@ -154,10 +184,12 @@ class Main:
                 for evento in pg.event.get():
                     # sai do jogo
                     if evento.type == pg.QUIT:
-                        self.historia = False
-                        self.rodando = False
+                        pygame.quit()
+                        exit()
                     elif evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
                         self.historia = False
+                        self.jogando = False
+                        self.dificuldades = False
                         self.rodando = True
 
                 # desenha tudo na tela
@@ -175,37 +207,112 @@ class Main:
                 pg.display.flip()
                 self.clock.tick(30)
 
+        def tela_dificuldades():
+
+            fundo = pg.image.load('assets/imagens/fundo_menu.png')
+            # textos
+            # titulo
+            titulo = pg.font.SysFont(None, 80)
+            objeto_titulo = titulo.render(
+                "Escolha uma dificuldade:", True, coresRGB["branco"])
+            titulo_rect = objeto_titulo.get_rect()
+            titulo_rect.topleft = (self.superficie.get_width() / 2 - titulo_rect.width / 2,
+                                   200)
+
+            # botoes
+            botao_normal = botao.render(
+                "Normal", True, coresRGB["branco"])
+            normal_rect = botao_normal.get_rect()
+            normal_rect.topleft = (self.superficie.get_width() / 2 - normal_rect.width / 2,
+                                   370)
+
+            botao_dificil = botao.render(
+                "Difícil", True, coresRGB["branco"])
+            dificil_rect = botao_dificil.get_rect()
+            dificil_rect.topleft = (self.superficie.get_width() / 2 - dificil_rect.width / 2,
+                                    470)
+
+            while self.dificuldades:
+                for evento in pg.event.get():
+                    # sai do jogo
+                    if evento.type == pg.QUIT:
+                        pygame.quit()
+                        exit()
+                    elif evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
+                        self.historia = False
+                        self.jogando = False
+                        self.dificuldades = False
+                        self.rodando = True
+                    elif evento.type == pg.MOUSEBUTTONDOWN:
+                        if evento.button == 1:
+                            if interagir_botao(normal_rect, botao_normal, botao, selecao, "Normal"):
+                                # toca o som do botão
+                                if self.com_som:
+                                    self.click.play()
+                                    pg.mixer.music.play(-1)
+
+                                self.dificuldade = "normal"
+                                self.jogando = True
+                                self.historia = False
+                                self.rodando = False
+                                self.dificuldades = False
+
+                            elif interagir_botao(dificil_rect, botao_dificil, botao, selecao, "Difícil"):
+                                # toca o som do botão
+                                if self.com_som:
+                                    self.click.play()
+                                    pg.mixer.music.play(-1)
+
+                                self.dificuldade = "dificil"
+                                self.jogando = True
+                                self.historia = False
+                                self.rodando = False
+                                self.dificuldades = False
+
+                # desenha tudo na tela
+                self.superficie.fill(coresRGB["vermelho"])
+                self.superficie.blit(fundo, (0, 0))
+
+                self.superficie.blit(objeto_titulo, titulo_rect)
+
+                interagir_botao(normal_rect, botao_normal,
+                                botao, selecao, "Normal")
+                interagir_botao(dificil_rect, botao_dificil,
+                                botao, selecao, "Difícil")
+
+                pg.display.flip()
+                self.clock.tick(30)
+
         # loop do menu
         while self.rodando:
             for evento in pg.event.get():
                 # sai do jogo
-                if evento.type == pg.QUIT:
-                    self.rodando = False
+                if evento.type == pg.QUIT or (evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE):
+                    pygame.quit()
+                    exit()
                 # troca para a tela de jogo (labirinto)
                 elif evento.type == pg.MOUSEBUTTONDOWN:
                     if evento.button == 1:
-                        # evita o bug do pygame com som
-                        try:
-                            click = pygame.mixer.Sound(
-                                'assets/sounds/button_sound.wav')
-                        except pygame.error:
-                            self.com_som = False
-
                         if interagir_botao(iniciar_rect, botao_iniciar, botao, selecao, "Iniciar"):
                             # toca o som do botão
                             if self.com_som:
-                                click.play()
+                                self.click.play()
 
-                            self.jogando = True
+                            self.dificuldades = True
+                            self.historia = False
                             self.rodando = False
+                            self.jogando = False
+                            tela_dificuldades()
 
                         elif interagir_botao(historia_rect, botao_historia, botao, selecao, "Historia"):
                             # toca o som do botão
                             if self.com_som:
-                                click.play()
+                                self.click.play()
 
                             self.historia = True
                             self.rodando = False
+                            self.jogando = False
+                            self.dificuldades = False
                             tela_historia()
 
             # desenha tudo no menu
@@ -233,8 +340,14 @@ class Main:
         if self.dificuldade == "normal":
             tempo = 90
             quant_relogios = 5
-            quant_moedas = 10
+            quant_moedas = 8
             tempo_bonus = 8
+
+        elif self.dificuldade == "dificil":
+            tempo = 80
+            quant_relogios = 3
+            quant_moedas = 10
+            tempo_bonus = 5
 
         # Objetos:
         # criando contador de tempo
@@ -242,15 +355,6 @@ class Main:
 
         # criando a chave
         offset = -32
-
-        # evita o erro do pygame com sons
-        try:
-            efeito_coleta_de_keys = pygame.mixer.Sound(
-                'assets/sounds/key_sound.wav')
-        except pygame.error:
-            self.com_som = False
-
-        imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
         pos_x, pos_y = choice(self.spawns)
         self.spawns.remove((pos_x, pos_y))
         pos_x += offset
@@ -258,20 +362,12 @@ class Main:
 
         if self.com_som:
             chave = Chave(pos_x, pos_y, self.superficie,
-                          efeito_coleta_de_keys)
+                          self.efeito_coleta_de_keys)
         else:
             chave = Chave(pos_x, pos_y, self.superficie)
 
         # criando os relogios
         offset = -20
-
-        # evita o erro do pygame com sons
-        try:
-            efeito_coleta_de_relogios = pygame.mixer.Sound(
-                'assets/sounds/clock_sound.wav')
-        except pygame.error:
-            self.com_som = False
-
         for _ in range(quant_relogios):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
@@ -280,22 +376,13 @@ class Main:
 
             if self.com_som:
                 relogio = Relogio(pos_x, pos_y, self.superficie,
-                                  contador_tempo, efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
+                                  contador_tempo, self.efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
             else:
                 relogio = Relogio(pos_x, pos_y, self.superficie,
                                   contador_tempo, tempo_extra=tempo_bonus)
 
         # criando as moedas
         offset = -32
-
-        # evita o bug do pygame com sons
-        try:
-            efeito_coleta_de_moedas = pygame.mixer.Sound(
-                'assets/sounds/coin_sound.wav')
-        except pygame.error:
-            self.com_som = False
-
-        imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
         for _ in range(quant_moedas):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
@@ -304,7 +391,7 @@ class Main:
 
             if self.com_som:
                 moeda = Moeda(pos_x, pos_y, self.superficie,
-                              efeito_coleta_de_moedas)
+                              self.efeito_coleta_de_moedas)
             else:
                 moeda = Moeda(pos_x, pos_y, self.superficie)
 
@@ -333,10 +420,19 @@ class Main:
             for evento in pg.event.get():
                 # sai do jogo
                 if evento.type == pg.QUIT:
+                    pygame.quit()
+                    exit()
+                elif evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
+                    self.rodando = True
+                    self.historia = False
+                    self.dificuldades = False
                     self.jogando = False
 
             # Game over quando o tempo acabar
             if contador_tempo.tempo < 0:
+                if self.com_som:
+                    pg.mixer.music.stop()
+                    self.game_over_som.play()
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
 
@@ -372,6 +468,9 @@ class Main:
 
             # Tela de vitoria quando o jogador estiver com a chave e colidir com a porta
             if Chave.coletou_chave and personagem.rect.colliderect(pg.Rect(370, 50, 60, 30)):
+                if self.com_som:
+                    pg.mixer.music.stop()
+                    self.victory.play()
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
 
@@ -438,16 +537,23 @@ class Main:
             pg.display.flip()
             self.clock.tick(30)
 
-    def reiniciar_jogo(self):
+    def resetar_jogo(self):
         Moeda.moedas_coletadas = 0
         Moeda.moedas_ativas = []
         Chave.chave_ativa = []
         Chave.coletou_chave = False
         Relogio.tempos_ativos = []
-        self.game_over = False
+
+    def reiniciar_jogo(self):
+        self.resetar_jogo()
+        dific = self.dificuldade
         self.__init__()
+        self.dificuldade = dific
+        self.game_over = False
         self.rodando = False
         self.jogando = True
+        self.historia = False
+        self.dificuldades = False
         self.update()
 
     def update(self):
@@ -457,9 +563,9 @@ class Main:
 
 if __name__ == "__main__":
     """executa o programa"""
-
     main = Main()
-    main.update()
 
-    pg.quit()
-    exit()
+    while True:
+        main.__init__()
+        main.update()
+        main.resetar_jogo()
