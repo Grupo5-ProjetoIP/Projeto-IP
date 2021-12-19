@@ -19,7 +19,7 @@ class Main:
         pg.init()
 
         # cria a tela
-        self.tela = Tela(800, 600, coresRGB["branco"])
+        self.tela = Tela(800, 700, coresRGB["branco"])
         self.superficie = self.tela.criar_tela()
 
         self.clock = pg.time.Clock()
@@ -65,23 +65,24 @@ class Main:
         botao = pg.font.SysFont(None, 60)
         # botão iniciar
         botao_iniciar = botao.render(
-            "Iniciar", True, coresRGB["branco"], coresRGB["vermelho"])
+            "Iniciar", True, coresRGB["branco"])
         iniciar_rect = botao_iniciar.get_rect()
         iniciar_rect.topleft = (self.superficie.get_width() / 2 - iniciar_rect.width / 2,
                                 250)
-        iniciar_selecao = pg.Rect(iniciar_rect.x - 25, iniciar_rect.y - 10,
-                                  iniciar_rect.width + 50, iniciar_rect.height + 20)
+        selecao = pg.Surface(
+            (iniciar_rect.width + 50, iniciar_rect.height + 20))
+        selecao.set_alpha(128)
+        selecao.fill(coresRGB["preto"])
 
         # botão historia
         botao_historia = botao.render(
-            "Historia", True, coresRGB["branco"], coresRGB["vermelho"])
+            "Historia", True, coresRGB["branco"])
         historia_rect = botao_historia.get_rect()
         historia_rect.topleft = (self.superficie.get_width() / 2 - historia_rect.width / 2,
                                  330)
-        historia_selecao = pg.Rect(iniciar_rect.x - 25, historia_rect.y - 10,
-                                   iniciar_rect.width + 50, iniciar_rect.height + 20)
 
-        def interagir_botao(retangulo: pg.Rect, botao: pg.Surface, fonte: pg.font.Font, selecao: pg.Rect, texto: str) -> bool:
+        def interagir_botao(retangulo: pg.Rect, botao: pg.Surface, fonte: pg.font.Font,
+                            selecao: pg.Surface, texto: str) -> bool:
             """verifica se o mouse está sobre o botão e se ele foi clicado"""
 
             # armazena a posição do mouse
@@ -89,33 +90,33 @@ class Main:
 
             # verifica mouse hover e desenha o botão com o fundo
             if retangulo.collidepoint(mouse_pos):
-                pg.draw.rect(self.superficie,
-                             coresRGB["preto"], selecao)
+                self.superficie.blit(
+                    selecao, (iniciar_rect.x - 25, retangulo.y - 10))
                 botao = fonte.render(
-                    texto, True, coresRGB["branco"], coresRGB["preto"])
+                    texto, True, coresRGB["branco"])
                 self.superficie.blit(botao, retangulo)
                 return True
 
             else:
-                pg.draw.rect(self.superficie,
-                             coresRGB["vermelho"], selecao)
                 botao = fonte.render(
-                    texto, True, coresRGB["branco"], coresRGB["vermelho"])
+                    texto, True, coresRGB["branco"])
                 self.superficie.blit(botao, retangulo)
                 return False
 
         def tela_historia():
+
+            fundo = pg.image.load('assets/imagens/fundo_menu.png')
             # textos
             # titulo
             titulo = pg.font.SysFont(None, 100)
             objeto_titulo = titulo.render(
-                "Historia", True, coresRGB["branco"], coresRGB["vermelho"])
+                "Historia", True, coresRGB["branco"])
             titulo_rect = objeto_titulo.get_rect()
             titulo_rect.topleft = (self.superficie.get_width() / 2 - titulo_rect.width / 2,
                                    70)
 
             # historia
-            historia = pg.font.SysFont("arial", 20)
+            historia = pg.font.SysFont(None, 35)
 
             linhas_historia = []
             with open('assets/textos/historia.txt') as file:
@@ -124,15 +125,30 @@ class Main:
             file.close()
 
             obj_linhas_historia = {}
-            for i in range(8):
+            linhas_x = []
+            linhas_y = []
+            linhas_tamanho = []
+            linhas_altura = []
+            for i in range(len(linhas_historia)):
                 texto_linha = linhas_historia[i]
                 objeto_linha = historia.render(
-                    texto_linha, True, coresRGB["branco"], coresRGB["vermelho"])
+                    texto_linha, True, coresRGB["branco"])
                 linha_rect = objeto_linha.get_rect()
                 linha_rect.topleft = (self.superficie.get_width() / 2 - linha_rect.width / 2,
-                                      200 + 25 * i)
+                                      170 + 28 * i)
+
+                linhas_x.append(linha_rect.x)
+                linhas_y.append(linha_rect.y)
+                linhas_tamanho.append(linha_rect.width)
+                linhas_altura.append(linha_rect.height)
 
                 obj_linhas_historia[objeto_linha] = linha_rect
+
+            fundo_historia = pg.Surface(
+                (max(linhas_tamanho) + 10, max(linhas_altura) * (len(linhas_historia) + 1) + 10))
+            fundo_historia.set_alpha(128)
+            fundo_historia.fill(coresRGB["preto"])
+            fundo_historia_topleft = (min(linhas_x) - 5, min(linhas_y) - 5)
 
             while self.historia:
                 for evento in pg.event.get():
@@ -146,6 +162,10 @@ class Main:
 
                 # desenha tudo na tela
                 self.superficie.fill(coresRGB["vermelho"])
+
+                self.superficie.blit(fundo, (0, 0))
+
+                self.superficie.blit(fundo_historia, fundo_historia_topleft)
 
                 self.superficie.blit(objeto_titulo, titulo_rect)
 
@@ -171,7 +191,7 @@ class Main:
                         except pygame.error:
                             self.com_som = False
 
-                        if interagir_botao(iniciar_rect, botao_iniciar, botao, iniciar_selecao, "Iniciar"):
+                        if interagir_botao(iniciar_rect, botao_iniciar, botao, selecao, "Iniciar"):
                             # toca o som do botão
                             if self.com_som:
                                 click.play()
@@ -179,7 +199,7 @@ class Main:
                             self.jogando = True
                             self.rodando = False
 
-                        elif interagir_botao(historia_rect, botao_historia, botao, historia_selecao, "Historia"):
+                        elif interagir_botao(historia_rect, botao_historia, botao, selecao, "Historia"):
                             # toca o som do botão
                             if self.com_som:
                                 click.play()
@@ -193,9 +213,9 @@ class Main:
 
             self.superficie.blit(objeto_titulo, titulo_rect)
             interagir_botao(iniciar_rect, botao_iniciar,
-                            botao, iniciar_selecao, "Iniciar")
+                            botao, selecao, "Iniciar")
             interagir_botao(historia_rect, botao_historia,
-                            botao, historia_selecao, "Historia")
+                            botao, selecao, "Historia")
 
             pg.display.flip()
             self.clock.tick(30)

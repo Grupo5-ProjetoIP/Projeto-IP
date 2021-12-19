@@ -166,14 +166,14 @@ class ContadorColetaveis():
         moeda = moeda.subsurface((64, 0), (64, 64))
         moeda = pg.transform.scale(moeda, (96, 96))
         moedarect = moeda.get_rect()
-        moedarect.topright = (745, -15)
+        moedarect.topright = (745, 603)
         self.janela.blit(moeda, moedarect)
 
         # texto da moeda
         text_moedas = self.fonte.render(
             f'{Moeda.moedas_coletadas}', True, coresRGB['branco'])
         text_moedasRect = text_moedas.get_rect()
-        text_moedasRect.topright = (755, 20)
+        text_moedasRect.topright = (755, 638)
         self.janela.blit(text_moedas, text_moedasRect)
 
         # Mostrando a chave
@@ -181,12 +181,12 @@ class ContadorColetaveis():
             self.chave_opaca = pg.image.load(
                 "assets/Coletaveis/chave_opaca.png")
             self.chaverect = self.chave_opaca.get_rect()
-            self.chaverect.topright = (680, -15)
+            self.chaverect.topright = (680, 605)
             self.janela.blit(self.chave_opaca, self.chaverect)
 
         else:
             self.chave_transparente = pg.image.load(
                 "assets/Coletaveis/chave_transparente.png")
             self.chaverect = self.chave_transparente.get_rect()
-            self.chaverect.topright = (680, -15)
+            self.chaverect.topright = (680, 605)
             self.janela.blit(self.chave_transparente, self.chaverect)
