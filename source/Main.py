@@ -231,7 +231,7 @@ class Main:
 
         # definição de acordo com a dificuldade
         if self.dificuldade == "normal":
-            tempo = 3
+            tempo = 80
             quant_relogios = 4
             quant_moedas = 10
             tempo_bonus = 8
