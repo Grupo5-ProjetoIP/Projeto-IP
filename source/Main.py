@@ -49,6 +49,29 @@ class Main:
         self.game_over = False
         self.vitoria = False
 
+        # carrega os sons
+        try:
+            pg.mixer.music.load('assets/sounds/musica.mp3')
+            self.game_over = pg.mixer.Sound('assets/sounds/game_over.mp3')
+            self.victory = pg.mixer.Sound('assets/sounds/victory.mp3')
+
+            self.click = pg.mixer.Sound('assets/sounds/button_sound.wav')
+            self.efeito_coleta_de_keys = pg.mixer.Sound(
+                'assets/sounds/key_sound.wav')
+            self.efeito_coleta_de_relogios = pg.mixer.Sound(
+                'assets/sounds/clock_sound.wav')
+            self.efeito_coleta_de_moedas = pg.mixer.Sound(
+                'assets/sounds/coin_sound.wav')
+
+        except pygame.error:
+            self.com_som = False
+
+        if self.com_som:
+            pg.mixer.music.set_volume(0.5)
+
+            # toca a música
+            pg.mixer.music.play(-1, fade_ms=2000)
+
     def menu_principal(self):
         """tela do menu"""
 
@@ -184,17 +207,11 @@ class Main:
                 # troca para a tela de jogo (labirinto)
                 elif evento.type == pg.MOUSEBUTTONDOWN:
                     if evento.button == 1:
-                        # evita o bug do pygame com som
-                        try:
-                            click = pygame.mixer.Sound(
-                                'assets/sounds/button_sound.wav')
-                        except pygame.error:
-                            self.com_som = False
-
                         if interagir_botao(iniciar_rect, botao_iniciar, botao, selecao, "Iniciar"):
                             # toca o som do botão
                             if self.com_som:
-                                click.play()
+                                self.click.play()
+                                pg.mixer.music.play(-1)
 
                             self.jogando = True
                             self.rodando = False
@@ -202,7 +219,7 @@ class Main:
                         elif interagir_botao(historia_rect, botao_historia, botao, selecao, "Historia"):
                             # toca o som do botão
                             if self.com_som:
-                                click.play()
+                                self.click.play()
 
                             self.historia = True
                             self.rodando = False
@@ -242,15 +259,6 @@ class Main:
 
         # criando a chave
         offset = -32
-
-        # evita o erro do pygame com sons
-        try:
-            efeito_coleta_de_keys = pygame.mixer.Sound(
-                'assets/sounds/key_sound.wav')
-        except pygame.error:
-            self.com_som = False
-
-        imagem_chave = pg.image.load("assets/Coletaveis/chave.png")
         pos_x, pos_y = choice(self.spawns)
         self.spawns.remove((pos_x, pos_y))
         pos_x += offset
@@ -258,20 +266,12 @@ class Main:
 
         if self.com_som:
             chave = Chave(pos_x, pos_y, self.superficie,
-                          efeito_coleta_de_keys)
+                          self.efeito_coleta_de_keys)
         else:
             chave = Chave(pos_x, pos_y, self.superficie)
 
         # criando os relogios
         offset = -20
-
-        # evita o erro do pygame com sons
-        try:
-            efeito_coleta_de_relogios = pygame.mixer.Sound(
-                'assets/sounds/clock_sound.wav')
-        except pygame.error:
-            self.com_som = False
-
         for _ in range(quant_relogios):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
@@ -280,22 +280,13 @@ class Main:
 
             if self.com_som:
                 relogio = Relogio(pos_x, pos_y, self.superficie,
-                                  contador_tempo, efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
+                                  contador_tempo, self.efeito_coleta_de_relogios, tempo_extra=tempo_bonus)
             else:
                 relogio = Relogio(pos_x, pos_y, self.superficie,
                                   contador_tempo, tempo_extra=tempo_bonus)
 
         # criando as moedas
         offset = -32
-
-        # evita o bug do pygame com sons
-        try:
-            efeito_coleta_de_moedas = pygame.mixer.Sound(
-                'assets/sounds/coin_sound.wav')
-        except pygame.error:
-            self.com_som = False
-
-        imagem_moeda = pg.image.load("assets/Coletaveis/moeda.png")
         for _ in range(quant_moedas):
             pos_x, pos_y = choice(self.spawns)
             self.spawns.remove((pos_x, pos_y))
@@ -304,7 +295,7 @@ class Main:
 
             if self.com_som:
                 moeda = Moeda(pos_x, pos_y, self.superficie,
-                              efeito_coleta_de_moedas)
+                              self.efeito_coleta_de_moedas)
             else:
                 moeda = Moeda(pos_x, pos_y, self.superficie)
 
@@ -337,6 +328,9 @@ class Main:
 
             # Game over quando o tempo acabar
             if contador_tempo.tempo < 0:
+                if self.com_som:
+                    pg.mixer.music.stop()
+                    self.game_over.play()
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
 
@@ -368,6 +362,9 @@ class Main:
 
             # Tela de vitoria quando o jogador estiver com a chave e colidir com a porta
             if Chave.coletou_chave and personagem.rect.colliderect(pg.Rect(370, 50, 60, 30)):
+                if self.com_som:
+                    pg.mixer.music.stop()
+                    self.victory.play()
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
 
