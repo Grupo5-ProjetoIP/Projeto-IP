@@ -231,7 +231,7 @@ class Main:
 
         # definição de acordo com a dificuldade
         if self.dificuldade == "normal":
-            tempo = 80
+            tempo = 3
             quant_relogios = 4
             quant_moedas = 10
             tempo_bonus = 8
@@ -336,17 +336,19 @@ class Main:
                     self.jogando = False
 
             # Game over quando o tempo acabar
-            if contador_tempo.tempo <= 0:
+            if contador_tempo.tempo < 0:
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
 
-                mensagem = "O tempo acabou :( , aperte espaço para usar os seus poderes de edição de vídeo e voltar no tempo para tentar novamente"
+                mensagem = "O tempo acabou , aperte espaço para usar os seus poderes de edição de vídeo"
+                mensagem2 = "e voltar no tempo para tentar novamente"
                 texto_formatado = fonte.render(mensagem, True, (255, 255, 255))
+                texto_2 = fonte.render(mensagem2, True, coresRGB["branco"])
                 ret_texto = texto_formatado.get_rect()
+                ret_2 = texto_2.get_rect()
 
                 self.game_over = True
                 while self.game_over:
-                    self.superficie.fill((0, 0, 0))
                     for event in pygame.event.get():
                         if event.type == pg.QUIT:
                             pygame.quit()
@@ -355,8 +357,13 @@ class Main:
                             if event.key == pg.K_SPACE:
                                 self.reiniciar_jogo()
 
+                    labirinto.desenhar_labirinto()
+                    self.superficie.blit(porta_sprites[0], (0, 0))
+
                     ret_texto.center = (390, 340)
+                    ret_2.center = (390, 370)
                     self.superficie.blit(texto_formatado, ret_texto)
+                    self.superficie.blit(texto_2, ret_2)
                     pygame.display.update()
 
             # Tela de vitoria quando o jogador estiver com a chave e colidir com a porta
