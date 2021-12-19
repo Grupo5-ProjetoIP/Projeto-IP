@@ -231,8 +231,8 @@ class Main:
 
         # definição de acordo com a dificuldade
         if self.dificuldade == "normal":
-            tempo = 80
-            quant_relogios = 4
+            tempo = 90
+            quant_relogios = 5
             quant_moedas = 10
             tempo_bonus = 8
 
@@ -430,6 +430,7 @@ class Main:
     def reiniciar_jogo(self):
         Moeda.moedas_coletadas = 0
         Moeda.moedas_ativas = []
+        Chave.chave_ativa = []
         Chave.coletou_chave = False
         Relogio.tempos_ativos = []
         self.game_over = False
