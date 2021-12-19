@@ -340,7 +340,7 @@ class Main:
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
 
-                mensagem = "O tempo acabou , aperte espaço para usar os seus poderes de edição de vídeo"
+                mensagem = "O tempo acabou, aperte espaço para usar os seus poderes de edição de vídeo"
                 mensagem2 = "e voltar no tempo para tentar novamente"
                 texto_formatado = fonte.render(mensagem, True, (255, 255, 255))
                 texto_2 = fonte.render(mensagem2, True, coresRGB["branco"])
@@ -397,29 +397,30 @@ class Main:
                         if event.type == pg.KEYDOWN:
                             if event.key == pg.K_SPACE:
                                 self.reiniciar_jogo()
+                    tela_escura = pg.Surface((800, 700))
+                    tela_escura.fill((0,0,0))
+                    tela_escura.set_alpha(190)
+                   
 
                     labirinto.desenhar_labirinto()
                     if porta_atual < len(porta_sprites) - 1:
                         porta_atual += 0.2
                         self.superficie.blit(
                             porta_sprites[int(porta_atual)], (0, 0))
+                        self.superficie.blit(
+                            personagem.sprites_cima[0], personagem.rect)
                     else:
                         self.superficie.blit(porta_sprites[-1], (0, 0))
-                    
-                    tela_escura = pg.Surface((800, 700))
-                    tela_escura.fill((0,0,0))
-                    tela_escura.set_alpha(190)
-                    
+                        self.superficie.blit(
+                            personagem.sprites_cima[0], personagem.rect)
+                        self.superficie.blit(tela_escura, tela_escura.get_rect())
+                        ret_texto1.center = (390, 340)
+                        ret_texto2.center = (390, 370)
+                        ret_texto3.center = (390, 400)
+                        self.superficie.blit(texto1, ret_texto1)
+                        self.superficie.blit(texto2, ret_texto2)
+                        self.superficie.blit(texto3, ret_texto3)
 
-                    self.superficie.blit(
-                        personagem.sprites_cima[0], personagem.rect)
-                    self.superficie.blit(tela_escura, tela_escura.get_rect())
-                    ret_texto1.center = (390, 340)
-                    ret_texto2.center = (390, 370)
-                    ret_texto3.center = (390, 400)
-                    self.superficie.blit(texto1, ret_texto1)
-                    self.superficie.blit(texto2, ret_texto2)
-                    self.superficie.blit(texto3, ret_texto3)
                     pygame.display.update()
 
             labirinto.desenhar_labirinto()
