@@ -346,6 +346,9 @@ class Main:
                 texto_2 = fonte.render(mensagem2, True, coresRGB["branco"])
                 ret_texto = texto_formatado.get_rect()
                 ret_2 = texto_2.get_rect()
+                tela_escura = pg.Surface((800, 700))
+                tela_escura.fill((0,0,0))
+                tela_escura.set_alpha(190)
 
                 self.game_over = True
                 while self.game_over:
@@ -359,6 +362,7 @@ class Main:
 
                     labirinto.desenhar_labirinto()
                     self.superficie.blit(porta_sprites[0], (0, 0))
+                    self.superficie.blit(tela_escura, tela_escura.get_rect())
 
                     ret_texto.center = (390, 340)
                     ret_2.center = (390, 370)
@@ -401,9 +405,15 @@ class Main:
                             porta_sprites[int(porta_atual)], (0, 0))
                     else:
                         self.superficie.blit(porta_sprites[-1], (0, 0))
+                    
+                    tela_escura = pg.Surface((800, 700))
+                    tela_escura.fill((0,0,0))
+                    tela_escura.set_alpha(190)
+                    
 
                     self.superficie.blit(
                         personagem.sprites_cima[0], personagem.rect)
+                    self.superficie.blit(tela_escura, tela_escura.get_rect())
                     ret_texto1.center = (390, 340)
                     ret_texto2.center = (390, 370)
                     ret_texto3.center = (390, 400)
