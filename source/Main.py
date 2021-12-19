@@ -52,15 +52,15 @@ class Main:
     def menu_principal(self):
         """tela do menu"""
 
-        # textos
-        # titulo
-        titulo = pg.font.SysFont(None, 100)
-        objeto_titulo = titulo.render(
-            "Cin Maze", True, coresRGB["branco"], coresRGB["vermelho"])
-        titulo_rect = objeto_titulo.get_rect()
-        titulo_rect.topleft = (self.superficie.get_width() / 2 - titulo_rect.width / 2,
-                               70)
+        # fundo
+        fundo_atual = 0
+        fundo_principal = pg.image.load('assets/imagens/menu.png')
+        sprites_menu = []
+        for i in range(4):
+            img = fundo_principal.subsurface((i*800, 0), (800, 700))
+            sprites_menu.append(img)
 
+        # textos
         # botões
         botao = pg.font.SysFont(None, 60)
         # botão iniciar
@@ -68,7 +68,7 @@ class Main:
             "Iniciar", True, coresRGB["branco"])
         iniciar_rect = botao_iniciar.get_rect()
         iniciar_rect.topleft = (self.superficie.get_width() / 2 - iniciar_rect.width / 2,
-                                250)
+                                450)
         selecao = pg.Surface(
             (iniciar_rect.width + 50, iniciar_rect.height + 20))
         selecao.set_alpha(128)
@@ -79,7 +79,7 @@ class Main:
             "Historia", True, coresRGB["branco"])
         historia_rect = botao_historia.get_rect()
         historia_rect.topleft = (self.superficie.get_width() / 2 - historia_rect.width / 2,
-                                 330)
+                                 530)
 
         def interagir_botao(retangulo: pg.Rect, botao: pg.Surface, fonte: pg.font.Font,
                             selecao: pg.Surface, texto: str) -> bool:
@@ -211,7 +211,13 @@ class Main:
             # desenha tudo no menu
             self.superficie.fill(coresRGB["vermelho"])
 
-            self.superficie.blit(objeto_titulo, titulo_rect)
+            # animação do fundo
+            fundo_atual += 0.15
+            if fundo_atual >= len(sprites_menu):
+                fundo_atual = 0
+            img_fundo_atual = sprites_menu[int(fundo_atual)]
+            self.superficie.blit(img_fundo_atual, (0, 0))
+
             interagir_botao(iniciar_rect, botao_iniciar,
                             botao, selecao, "Iniciar")
             interagir_botao(historia_rect, botao_historia,
@@ -310,6 +316,13 @@ class Main:
         labirinto = Labirinto(
             imagem_labirinto, paredes_labirinto, self.superficie)
 
+        # cria a porta
+        porta = pg.image.load('assets/imagens/porta.png')
+        porta_sprites = []
+        for i in range(8):
+            img = porta.subsurface((i*800, 0), (800, 700))
+            porta_sprites.append(img)
+
         # cria o personagem
         imagem_personagem = pg.image.load(
             "assets/Personagem/imagens/player.png")
@@ -327,7 +340,7 @@ class Main:
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
 
-                mensagem = "aperte espaço para usar os seus poderes de edição de vídeo e voltar no tempo para tentar novamente"
+                mensagem = "O tempo acabou :( , aperte espaço para usar os seus poderes de edição de vídeo e voltar no tempo para tentar novamente"
                 texto_formatado = fonte.render(mensagem, True, (255, 255, 255))
                 ret_texto = texto_formatado.get_rect()
 
@@ -347,30 +360,53 @@ class Main:
                     pygame.display.update()
 
             # Tela de vitoria quando o jogador estiver com a chave e colidir com a porta
-            if Chave.coletou_chave:
-                if personagem.rect.colliderect(pg.Rect(370, 50, 60, 30)):
-                    fonte = pygame.font.SysFont(None, 20, True, False)
+            if Chave.coletou_chave and personagem.rect.colliderect(pg.Rect(370, 50, 60, 30)):
 
-                    mensagem = "VITÓRIA!!!! APERTE ESPAÇO PARA JOGAR NOVAMENTE"
-                    texto_formatado = fonte.render(
-                        mensagem, True, (255, 255, 255))
-                    ret_texto = texto_formatado.get_rect()
+                fonte = pygame.font.SysFont(None, 20, True, False)
 
-                    self.vitoria = True
-                    while self.vitoria:
-                        self.superficie.fill((0, 0, 0))
-                        for event in pygame.event.get():
-                            if event.type == pg.QUIT:
-                                pygame.quit()
-                                exit()
-                            if event.type == pg.KEYDOWN:
-                                if event.key == pg.K_SPACE:
-                                    self.reiniciar_jogo()
-                        ret_texto.center = (390, 340)
-                        self.superficie.blit(texto_formatado, ret_texto)
-                        pygame.display.update()
+                mensagem = "VITÓRIA!!!! Ricardo descobriu que a sala guardava músicas secretas da banda Faringes da Paixão!!"
+                mensagem2 = "(incluindo Fofolete do cão 2)"
+                mensagem3 = "APERTE ESPAÇO PARA REINICIAR"
+                texto1 = fonte.render(
+                    mensagem, True, coresRGB["branco"])
+                texto2 = fonte.render(mensagem2, True, coresRGB["branco"])
+                texto3 = fonte.render(mensagem3, True, coresRGB["branco"])
+                ret_texto1 = texto1.get_rect()
+                ret_texto2 = texto2.get_rect()
+                ret_texto3 = texto3.get_rect()
+
+                self.vitoria = True
+
+                porta_atual = 0
+                while self.vitoria:
+                    for event in pygame.event.get():
+                        if event.type == pg.QUIT:
+                            pygame.quit()
+                            exit()
+                        if event.type == pg.KEYDOWN:
+                            if event.key == pg.K_SPACE:
+                                self.reiniciar_jogo()
+
+                    labirinto.desenhar_labirinto()
+                    if porta_atual < len(porta_sprites) - 1:
+                        porta_atual += 0.2
+                        self.superficie.blit(
+                            porta_sprites[int(porta_atual)], (0, 0))
+                    else:
+                        self.superficie.blit(porta_sprites[-1], (0, 0))
+
+                    self.superficie.blit(
+                        personagem.sprites_cima[0], personagem.rect)
+                    ret_texto1.center = (390, 340)
+                    ret_texto2.center = (390, 370)
+                    ret_texto3.center = (390, 400)
+                    self.superficie.blit(texto1, ret_texto1)
+                    self.superficie.blit(texto2, ret_texto2)
+                    self.superficie.blit(texto3, ret_texto3)
+                    pygame.display.update()
 
             labirinto.desenhar_labirinto()
+            self.superficie.blit(porta_sprites[0], (0, 0))
             personagem.update()
             contador_tempo.update()
 
