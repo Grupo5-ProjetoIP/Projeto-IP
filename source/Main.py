@@ -53,7 +53,7 @@ class Main:
         # carrega os sons
         try:
             pg.mixer.music.load('assets/sounds/musica.mp3')
-            self.game_over = pg.mixer.Sound('assets/sounds/game_over.mp3')
+            self.game_over_som = pg.mixer.Sound('assets/sounds/game_over.mp3')
             self.victory = pg.mixer.Sound('assets/sounds/victory.mp3')
 
             self.click = pg.mixer.Sound('assets/sounds/button_sound.wav')
@@ -68,7 +68,13 @@ class Main:
             self.com_som = False
 
         if self.com_som:
-            pg.mixer.music.set_volume(0.5)
+            pg.mixer.music.set_volume(0.25)
+
+            self.game_over_som.set_volume(0.6)
+            self.victory.set_volume(0.5)
+            self.efeito_coleta_de_keys.set_volume(0.5)
+            self.efeito_coleta_de_moedas.set_volume(0.5)
+            self.efeito_coleta_de_relogios.set_volume(0.25)
 
             # toca a música
             pg.mixer.music.play(-1, fade_ms=2000)
@@ -178,10 +184,12 @@ class Main:
                 for evento in pg.event.get():
                     # sai do jogo
                     if evento.type == pg.QUIT:
-                        self.historia = False
-                        self.rodando = False
+                        pygame.quit()
+                        exit()
                     elif evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
                         self.historia = False
+                        self.jogando = False
+                        self.dificuldades = False
                         self.rodando = True
 
                 # desenha tudo na tela
@@ -228,9 +236,11 @@ class Main:
                 for evento in pg.event.get():
                     # sai do jogo
                     if evento.type == pg.QUIT:
-                        self.dificuldades = False
-                        self.rodando = False
+                        pygame.quit()
+                        exit()
                     elif evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
+                        self.historia = False
+                        self.jogando = False
                         self.dificuldades = False
                         self.rodando = True
                     elif evento.type == pg.MOUSEBUTTONDOWN:
@@ -243,6 +253,8 @@ class Main:
 
                                 self.dificuldade = "normal"
                                 self.jogando = True
+                                self.historia = False
+                                self.rodando = False
                                 self.dificuldades = False
 
                             elif interagir_botao(dificil_rect, botao_dificil, botao, selecao, "Difícil"):
@@ -253,6 +265,8 @@ class Main:
 
                                 self.dificuldade = "dificil"
                                 self.jogando = True
+                                self.historia = False
+                                self.rodando = False
                                 self.dificuldades = False
 
                 # desenha tudo na tela
@@ -273,8 +287,9 @@ class Main:
         while self.rodando:
             for evento in pg.event.get():
                 # sai do jogo
-                if evento.type == pg.QUIT:
-                    self.rodando = False
+                if evento.type == pg.QUIT or (evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE):
+                    pygame.quit()
+                    exit()
                 # troca para a tela de jogo (labirinto)
                 elif evento.type == pg.MOUSEBUTTONDOWN:
                     if evento.button == 1:
@@ -284,7 +299,9 @@ class Main:
                                 self.click.play()
 
                             self.dificuldades = True
+                            self.historia = False
                             self.rodando = False
+                            self.jogando = False
                             tela_dificuldades()
 
                         elif interagir_botao(historia_rect, botao_historia, botao, selecao, "Historia"):
@@ -294,6 +311,8 @@ class Main:
 
                             self.historia = True
                             self.rodando = False
+                            self.jogando = False
+                            self.dificuldades = False
                             tela_historia()
 
             # desenha tudo no menu
@@ -401,13 +420,19 @@ class Main:
             for evento in pg.event.get():
                 # sai do jogo
                 if evento.type == pg.QUIT:
+                    pygame.quit()
+                    exit()
+                elif evento.type == pg.KEYDOWN and evento.key == pg.K_ESCAPE:
+                    self.rodando = True
+                    self.historia = False
+                    self.dificuldades = False
                     self.jogando = False
 
             # Game over quando o tempo acabar
             if contador_tempo.tempo < 0:
                 if self.com_som:
                     pg.mixer.music.stop()
-                    self.game_over.play()
+                    self.game_over_som.play()
 
                 fonte = pygame.font.SysFont(None, 20, True, False)
 
@@ -501,16 +526,23 @@ class Main:
             pg.display.flip()
             self.clock.tick(30)
 
-    def reiniciar_jogo(self):
+    def resetar_jogo(self):
         Moeda.moedas_coletadas = 0
         Moeda.moedas_ativas = []
         Chave.chave_ativa = []
         Chave.coletou_chave = False
         Relogio.tempos_ativos = []
-        self.game_over = False
+
+    def reiniciar_jogo(self):
+        self.resetar_jogo()
+        dific = self.dificuldade
         self.__init__()
+        self.dificuldade = dific
+        self.game_over = False
         self.rodando = False
         self.jogando = True
+        self.historia = False
+        self.dificuldades = False
         self.update()
 
     def update(self):
@@ -520,9 +552,9 @@ class Main:
 
 if __name__ == "__main__":
     """executa o programa"""
-
     main = Main()
-    main.update()
 
-    pg.quit()
-    exit()
+    while True:
+        main.__init__()
+        main.update()
+        main.resetar_jogo()
