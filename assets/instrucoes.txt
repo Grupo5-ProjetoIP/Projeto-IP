@@ -1,0 +1,6 @@
+para executar o jogo faça o seguinte:
+
+opcao1: na pasta em que este arquivo se encontra, abra o prompt de comando e
+        execute o arquivo no caminho "./source/Main.py" (sem aspas)
+
+opcao2: abra a pasta como um projeto em uma IDE e execute o arquivo "Main.py" (sem aspas) 
