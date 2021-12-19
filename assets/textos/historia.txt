@@ -1,8 +1,16 @@
-"Ricardo estava usando o computador do Cin para gravar uma video aula quando, em sua
-curiosidade, acabou achando uma pasta secreta com um mapa que levava para uma sala
-subterranea na UFPE, que tambem continha informacoes sobre um labirinto que levava ate ela.
-A chave para passar na porta estava em algum lugar dentro do labirinto e, pelo caminho, podia
-encontrar diversos objetos que o ajudavam durante o percurso, alem de algumas moedas
-brilhantes *o*. Acima do labirinto havia um alarme com uma contagem regressiva de alguns minutos.
-Como sempre gostou de labirintos e caca ao tesouro, Ricardo resolveu tentar passar por ele para 
-achar as chaves e entrar na sala. Sera que ele consegue a tempo?"
+"Ricardo estava usando o computador do Cin para gravar
+uma video aula quando, em sua curiosidade,
+acabou achando uma pasta secreta com um mapa
+que levava para uma sala subterranea na UFPE,
+que tambem continha informacoes sobre um labirinto 
+que levava ate ela. A chave para passar na porta
+estava em algum lugar dentro do labirinto e,
+pelo caminho, podia encontrar diversos objetos 
+que o ajudavam durante o percurso, 
+alem de algumas moedas brilhantes *o*.
+Acima do labirinto havia um alarme com uma 
+contagem regressiva de alguns minutos.
+Como sempre gostou de labirintos e caca ao tesouro,
+Ricardo resolveu tentar passar por ele para achar
+as chaves e entrar na sala.
+Sera que ele consegue a tempo?"

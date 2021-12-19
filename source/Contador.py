@@ -10,7 +10,7 @@ class Contador:
         relogio_imagem = relogio_imagem.subsurface((160*2, 0), (160, 160))
         self.relogio_imagem = pg.transform.scale(relogio_imagem, (64, 64))
         self.relogiorect = relogio_imagem.get_rect()
-        self.relogiorect.topleft = (5, 5)
+        self.relogiorect.topleft = (35, 623)
 
         self.cor = coresRGB["branco"]
         self.janela = janela
@@ -53,7 +53,7 @@ class Contador:
                     f'{minutos}:{segundos}', True, self.cor)
 
     def desenhar_contador(self):
-        self.janela.blit(self.texto, [70, 15])
+        self.janela.blit(self.texto, (100, 635))
         self.janela.blit(self.relogio_imagem, self.relogiorect)
 
     def update(self):
